@@ -1,5 +1,6 @@
 package Models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class CambioEstadoTurno {
@@ -35,11 +36,30 @@ public class CambioEstadoTurno {
     public void setFechaHoraHasta(Date fechaHoraHasta) {
         this.fechaHoraHasta = fechaHoraHasta;
     }
+
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
+    }
     /*
         Fin metodos gets, sets
     */
 
     public String mostrarCambioEstadoTurno(){
         return "mostrar cambio de estado turno";
+    }
+
+    public Estado esActual(LocalDateTime horaFechaInicio, LocalDateTime horaFechaFin) {
+        if(getFechaHoraDesde().equals(horaFechaInicio) && getFechaHoraHasta().equals(horaFechaFin))
+            return mostrarEstado();
+        return null;
+
+    }
+
+    private Estado mostrarEstado() {
+        return getEstado();
     }
 }

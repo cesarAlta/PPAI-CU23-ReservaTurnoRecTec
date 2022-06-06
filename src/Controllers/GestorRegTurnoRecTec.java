@@ -10,14 +10,14 @@ import Views.TablaRecursosTec;
 import javafx.scene.control.Button;
 
 import javax.xml.stream.util.StreamReaderDelegate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class GestorRegTurnoRecTec {
     private Controller controller;
     private List<TipoRecursoTecnologico> tipoRecTecnologicos;
+    private  List<RecursoTecnologico> recTecActivosReservables;
+    private LocalDateTime fechaHoraActual;
 
     public GestorRegTurnoRecTec(Controller controller) {
         this.controller = controller;
@@ -25,15 +25,23 @@ public class GestorRegTurnoRecTec {
 
     public void recursoTecnologicoSeeccionado(TablaRecursosTec trecSelec) {
         if (verificarCentroInvestigacionCientificoLogueado()){
-            obtenerTurnosRecursoTecnologogicoSeleccionado();
+            obtenerTurnosRecursoTecnologogicoSeleccionado(trecSelec);
             obtenerFechaHoraActual();
         }
     }
 
     private void obtenerFechaHoraActual() {
+        fechaHoraActual = LocalDateTime.now();
     }
 
-    private void obtenerTurnosRecursoTecnologogicoSeleccionado() {
+    private void obtenerTurnosRecursoTecnologogicoSeleccionado(TablaRecursosTec tRTec) {
+        RecursoTecnologico recTecSel = null;
+        for(RecursoTecnologico recTec : recTecActivosReservables){
+            if(recTec.getNumeroRT() == tRTec.getIdRec())
+                recTecSel = recTec;
+        }
+        recTecSel.mostrarTurnos(fechaHoraActual);
+
     }
 
     private boolean verificarCentroInvestigacionCientificoLogueado() {
@@ -61,7 +69,7 @@ public class GestorRegTurnoRecTec {
 
     public List<TablaRecursosTec> tomarSeleccionTipoRecurso(String tipoRecursoTecnologico) throws Exception {
 
-        List<RecursoTecnologico> recTecActivosReservables =  obtenerRecursoTecnologogicoActivo(tipoRecursoTecnologico);
+        recTecActivosReservables =  obtenerRecursoTecnologogicoActivo(tipoRecursoTecnologico);
         List<TablaRecursosTec> tablaRecursosTecs = new ArrayList<>();
         for( RecursoTecnologico rt : recTecActivosReservables){
             TablaRecursosTec trt = new TablaRecursosTec();

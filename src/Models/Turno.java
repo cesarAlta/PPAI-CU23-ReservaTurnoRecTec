@@ -1,14 +1,17 @@
 package Models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 public class Turno {
     private Date fechaGeneracion;
     private String diaSemana;
-    private Date fechaHoraInicio;
-    private Date fechaHoraFin;
+    private LocalDateTime fechaHoraInicio;
+    private LocalDateTime fechaHoraFin;
+    private List<CambioEstadoTurno> cambioEstadoTurnos;
 
-    public Turno(Date fechaGeneracion, String diaSemana, Date fechaHoraInicio, Date fechaHoraFin) {
+    public Turno(Date fechaGeneracion, String diaSemana, LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin) {
         this.fechaGeneracion = fechaGeneracion;
         this.diaSemana = diaSemana;
         this.fechaHoraInicio = fechaHoraInicio;
@@ -31,24 +34,42 @@ public class Turno {
         this.diaSemana = diaSemana;
     }
 
-    public Date getFechaHoraInicio() {
+    public LocalDateTime getFechaHoraInicio() {
         return fechaHoraInicio;
     }
 
-    public void setFechaHoraInicio(Date fechaHoraInicio) {
+    public void setFechaHoraInicio(LocalDateTime fechaHoraInicio) {
         this.fechaHoraInicio = fechaHoraInicio;
     }
 
-    public Date getFechaHoraFin() {
+    public LocalDateTime getFechaHoraFin() {
         return fechaHoraFin;
     }
 
-    public void setFechaHoraFin(Date fechaHoraFin) {
+    public void setFechaHoraFin(LocalDateTime fechaHoraFin) {
         this.fechaHoraFin = fechaHoraFin;
+    }
+
+    public List<CambioEstadoTurno> getCambioEstadoTurnos() {
+        return cambioEstadoTurnos;
+    }
+
+    public void setCambioEstadoTurnos(List<CambioEstadoTurno> cambioEstadoTurnos) {
+        this.cambioEstadoTurnos = cambioEstadoTurnos;
     }
 
     public void mostrarTurno(){
 
     }
     public void estoyDisponible(){}
+
+    public void mostrarDatos(LocalDateTime fechaHoraActual) {
+        LocalDateTime horaFechaInicio =  getFechaHoraInicio();
+        LocalDateTime horaFechaFin =getFechaHoraFin();
+        for (CambioEstadoTurno cET: getCambioEstadoTurnos()){
+            cET.esActual(horaFechaInicio, horaFechaFin);
+        }
+
+
+    }
 }

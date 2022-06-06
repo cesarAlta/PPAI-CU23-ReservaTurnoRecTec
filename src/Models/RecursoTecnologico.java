@@ -1,5 +1,6 @@
 package Models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class RecursoTecnologico {
     private int periodicidadMantenimientoPrev;
     private int duracionMantenimiento;
     private int fraccionTurnos;
-    private Turno turno;
+    private List<Turno> turnos;
     private List<CambioEstadoRT> cambioEstadoRT;
     private Modelo modelo;
     private TipoRecursoTecnologico tipoRecursoTecnologico;
@@ -92,12 +93,12 @@ public class RecursoTecnologico {
         this.tipoRecursoTecnologico = tipoRecursoTecnologico;
     }
 
-    public Turno getTurno() {
-        return turno;
+    public List<Turno> getTurnos() {
+        return turnos;
     }
 
-    public void setTurno(Turno turno) {
-        this.turno = turno;
+    public void setTurnos(List<Turno> turnos) {
+        this.turnos = turnos;
     }
 
     public List<CambioEstadoRT> getCambioEstadoRT() {
@@ -112,6 +113,7 @@ public class RecursoTecnologico {
 
         return getTipoRecursoTecnologico().getNombre().equals(tipoRecSeleccionado);
     }
+
     public boolean esReservable(){
         for(CambioEstadoRT ceRT: cambioEstadoRT) {
             if(ceRT.esActual()){
@@ -121,6 +123,7 @@ public class RecursoTecnologico {
         }
         return false;
     }
+
 
     public void mostrarRT(){
 
@@ -132,4 +135,9 @@ public class RecursoTecnologico {
     public void nuevoMantenimietoPreventivo(){}
     public void misTurnosDisponibles(){}
 
+    public void mostrarTurnos(LocalDateTime fechaHoraActual) {
+        for(Turno turno: getTurnos()){
+            turno.mostrarDatos(fechaHoraActual);
+        }
+    }
 }
