@@ -27,7 +27,7 @@
             </TableView>
             <Label layoutX="20.0" layoutY="248.0" text="Fecha" />
             <DatePicker fx:id="calendarioTurnos" layoutX="62.0" layoutY="244.0" />
-            <ListView fx:id="tunosLista" layoutX="349.0" layoutY="244.0" prefHeight="161.0" prefWidth="210.0" />
+            <ListView fx:id="tunosLista" layoutX="291.0" layoutY="244.0" prefHeight="162.0" prefWidth="268.0" />
             <Label layoutX="349.0" layoutY="219.0" text="Turnos" />
             <ScrollBar layoutX="551.0" layoutY="244.0" orientation="VERTICAL" prefHeight="162.0" prefWidth="14.0" />
             <Button layoutX="476.0" layoutY="457.0" mnemonicParsing="false" onMouseClicked="#onConfirmarButtonClicked" prefHeight="26.0" prefWidth="90.0" text="Reservar" />

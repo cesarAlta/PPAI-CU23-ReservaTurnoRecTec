@@ -17,6 +17,8 @@ public class GestorRegTurnoRecTec {
     private Controller controller;
     private List<TipoRecursoTecnologico> tipoRecTecnologicos;
     private  List<RecursoTecnologico> recTecActivosReservables;
+    private RecursoTecnologico recursoTecnologicoSeleccionado=null;
+    private List<HashMap> turnosRecTecnologicoSeleccionado;
     private LocalDateTime fechaHoraActual;
 
     public GestorRegTurnoRecTec(Controller controller) {
@@ -24,24 +26,14 @@ public class GestorRegTurnoRecTec {
     }
 
     public void recursoTecnologicoSeeccionado(TablaRecursosTec trecSelec) {
+        for(RecursoTecnologico recTec: recTecActivosReservables){
+            if(recTec.getNumeroRT() == trecSelec.getIdRec())
+                recursoTecnologicoSeleccionado = recTec;
+        }
         if (verificarCentroInvestigacionCientificoLogueado()){
-            obtenerTurnosRecursoTecnologogicoSeleccionado(trecSelec);
+            obtenerTurnosRecursoTecnologogicoSeleccionado();
             obtenerFechaHoraActual();
         }
-    }
-
-    private void obtenerFechaHoraActual() {
-        fechaHoraActual = LocalDateTime.now();
-    }
-
-    private void obtenerTurnosRecursoTecnologogicoSeleccionado(TablaRecursosTec tRTec) {
-        RecursoTecnologico recTecSel = null;
-        for(RecursoTecnologico recTec : recTecActivosReservables){
-            if(recTec.getNumeroRT() == tRTec.getIdRec())
-                recTecSel = recTec;
-        }
-        recTecSel.mostrarTurnos(fechaHoraActual);
-
     }
 
     private boolean verificarCentroInvestigacionCientificoLogueado() {
@@ -60,12 +52,9 @@ public class GestorRegTurnoRecTec {
         TipoRecursoTecnologico_DAO tipoRecTecnologicoDAO = new TipoRecursoTecnologico_DAO();
         List<TipoRecursoTecnologico> tiposRecTecnologicos=  tipoRecTecnologicoDAO.listar();
         return tiposRecTecnologicos;
-
     }
-    public List<TipoRecursoTecnologico> getTipo(){
-        return tipoRecTecnologicos;
 
-    }
+    public List<TipoRecursoTecnologico> getTipo(){ return tipoRecTecnologicos; }
 
     public List<TablaRecursosTec> tomarSeleccionTipoRecurso(String tipoRecursoTecnologico) throws Exception {
 
@@ -81,11 +70,9 @@ public class GestorRegTurnoRecTec {
            trt.setButton(new Button("Ver"));
             tablaRecursosTecs.add(trt);
         }
-
         return tablaRecursosTecs;
-
-
     }
+
     public List<RecursoTecnologico> obtenerRecursoTecnologogicoActivo(String tipoRecursoTecnologico) throws Exception {
         RecursoTecnologico_DAO recursoTecnologico_dao = new RecursoTecnologico_DAO();
         List<RecursoTecnologico> recursosTecnologicos = new ArrayList<>();
@@ -102,5 +89,28 @@ public class GestorRegTurnoRecTec {
 
         return recursosTecnologicos;
     }
+
+    private void obtenerTurnosRecursoTecnologogicoSeleccionado() {
+        obtenerFechaHoraActual();
+        turnosRecTecnologicoSeleccionado = recursoTecnologicoSeleccionado.mostrarTurnos(fechaHoraActual);
+        agruparYOrdenar();
+        definirColorTurno();
+
+        controller.pedirSeleccionTurno(turnosRecTecnologicoSeleccionado);
+
+    }
+
+    private void obtenerFechaHoraActual() {
+        fechaHoraActual = LocalDateTime.now();
+    }
+
+    private void agruparYOrdenar(){
+
+    }
+    private void definirColorTurno(){
+
+    }
+
+
 
 }

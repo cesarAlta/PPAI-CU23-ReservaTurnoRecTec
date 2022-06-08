@@ -1,7 +1,11 @@
 package Models;
 
+import jdk.nashorn.internal.runtime.OptimisticReturnFilters;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class Turno {
@@ -16,6 +20,10 @@ public class Turno {
         this.diaSemana = diaSemana;
         this.fechaHoraInicio = fechaHoraInicio;
         this.fechaHoraFin = fechaHoraFin;
+    }
+
+    public Turno() {
+
     }
 
     public Date getFechaGeneracion() {
@@ -63,13 +71,33 @@ public class Turno {
     }
     public void estoyDisponible(){}
 
-    public void mostrarDatos(LocalDateTime fechaHoraActual) {
+    /*
+     Compara la fecha actual con la fecha del turno;
+     devuelve verdadero si la fecha del turno esta despues de la actual.
+     El metodo isfAfter() retorna true si getFechaHoraInico() esta despues de fechaHoraActual.
+    */
+    public boolean esPosteriorFechaActual(LocalDateTime fechaHoraActual) {
+        if(getFechaHoraInicio().isAfter(fechaHoraActual)){
+            return true;
+        }
+        return false;
+    }
+
+    public HashMap<String,String> mostrarDatos() {
         LocalDateTime horaFechaInicio =  getFechaHoraInicio();
         LocalDateTime horaFechaFin =getFechaHoraFin();
+        String estadoActual= null;
+
         for (CambioEstadoTurno cET: getCambioEstadoTurnos()){
-            cET.esActual(horaFechaInicio, horaFechaFin);
+            if(cET.esActual())
+                estadoActual = cET.mostrarEstado();
         }
 
+        HashMap<String,String> datos = new HashMap<>();
+        datos.put("horaFechaInicio",horaFechaInicio.toString());
+        datos.put("horaFechaFin",horaFechaFin.toString());
+        datos.put("estado",estadoActual);
 
+        return datos;
     }
 }

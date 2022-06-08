@@ -4,6 +4,7 @@ package Views;
 import Controllers.GestorRegTurnoRecTec;
 import Models.RecursoTecnologico;
 import Models.TipoRecursoTecnologico;
+import com.mysql.cj.result.LocalDateTimeValueFactory;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -16,9 +17,16 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.util.Callback;
 
 import java.net.URL;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 //el controlador debe inicializar de una fomra cuando arranque la pantalla entonces hacemos que implemente el metodo inizializable
@@ -126,5 +134,56 @@ public void tomarSeleccionTipoRecurso(String tipoSeleccionado) throws Exception 
     }
 
 
+    public void pedirSeleccionTurno(List<HashMap> turnosRecTecnologicoSeleccionado) {
+        Callback<DatePicker, DateCell> dayCellFactory = dp -> new DateCell(){
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
 
+                super.updateItem(item, empty);
+
+                this.setDisable(false);
+                this.setBackground(null);
+                this.setTextFill(Color.BLACK);
+
+                // deshabilitar las fechas anteriores a la actual
+                if (item.isBefore(LocalDate.now())) {
+                    this.setDisable(true);
+                }
+/*
+                for (int i = 0; i < turnosRecTecnologicoSeleccionado.size(); i++) {
+                    // pintar de verde los dias con turnos disponibles.
+                    if(item.equals((Date)turnosRecTecnologicoSeleccionado.get(i).get("horaFechaInicio"))){
+                        Paint color = Color.GREEN;
+                        BackgroundFill fill = new BackgroundFill(color,null,null);
+                        this.setBackground(new Background(fill));
+                        this.setTextFill(Color.WHITESMOKE);
+                    }
+
+
+                }
+*/
+
+                // marcar los dias de quincena
+                int day = item.getDayOfMonth();
+                if (day == 15 || day == 30) {
+
+                    Paint color = Color.RED;
+                    BackgroundFill fill = new BackgroundFill(color, null, null);
+
+                    this.setBackground(new Background(fill));
+                    this.setTextFill(Color.WHITESMOKE);
+                }
+                //marcar dias disponibles en azul
+
+
+                // fines de semana en color negro
+                DayOfWeek dayweek = item.getDayOfWeek();
+                if (dayweek == DayOfWeek.SATURDAY || dayweek == DayOfWeek.SUNDAY) {
+                    this.setTextFill(Color.BLACK);
+                }
+            }
+        };
+        this.calendarioTurnos.setDayCellFactory(dayCellFactory);
+        this.tunosLista.getItems().addAll(turnosRecTecnologicoSeleccionado);
+    }
 }

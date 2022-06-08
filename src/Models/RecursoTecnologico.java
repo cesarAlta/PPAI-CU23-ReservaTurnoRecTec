@@ -1,7 +1,9 @@
 package Models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class RecursoTecnologico {
@@ -93,13 +95,9 @@ public class RecursoTecnologico {
         this.tipoRecursoTecnologico = tipoRecursoTecnologico;
     }
 
-    public List<Turno> getTurnos() {
-        return turnos;
-    }
+    public List<Turno> getTurnos() {return turnos;}
 
-    public void setTurnos(List<Turno> turnos) {
-        this.turnos = turnos;
-    }
+    public void setTurnos(List<Turno> turnos) {this.turnos = turnos;}
 
     public List<CambioEstadoRT> getCambioEstadoRT() {
         return cambioEstadoRT;
@@ -110,7 +108,6 @@ public class RecursoTecnologico {
     }
 
     public boolean esDeTipoRecursoTecnologicoSeleccionado(String tipoRecSeleccionado){
-
         return getTipoRecursoTecnologico().getNombre().equals(tipoRecSeleccionado);
     }
 
@@ -124,10 +121,7 @@ public class RecursoTecnologico {
         return false;
     }
 
-
-    public void mostrarRT(){
-
-    }
+    public void mostrarRT(){}
     public void habilitar(){}
     public void conocerCategoria(){}
     public void conocerCaracteristicaRecurso(){}
@@ -135,9 +129,13 @@ public class RecursoTecnologico {
     public void nuevoMantenimietoPreventivo(){}
     public void misTurnosDisponibles(){}
 
-    public void mostrarTurnos(LocalDateTime fechaHoraActual) {
+    public List<HashMap> mostrarTurnos(LocalDateTime fechaHoraActual) {
+        List<HashMap> datosTrunos = new ArrayList<>();
         for(Turno turno: getTurnos()){
-            turno.mostrarDatos(fechaHoraActual);
+            if(turno.esPosteriorFechaActual(fechaHoraActual)){
+                datosTrunos.add(turno.mostrarDatos());
+            }
         }
+        return datosTrunos;
     }
 }

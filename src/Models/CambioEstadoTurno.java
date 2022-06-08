@@ -7,33 +7,37 @@ public class CambioEstadoTurno {
     /*
         Atributos
     */
-    private Date fechaHoraDesde;
-    private Date fechaHoraHasta;
+    private LocalDateTime fechaHoraDesde;
+    private LocalDateTime fechaHoraHasta;
     private Estado estado;
     /*
         Constructor
     */
-    public CambioEstadoTurno(Date fechaHoraDesde, Date fechaHoraHasta) {
+    public CambioEstadoTurno(LocalDateTime fechaHoraDesde, LocalDateTime fechaHoraHasta) {
         this.fechaHoraDesde = fechaHoraDesde;
         this.fechaHoraHasta = fechaHoraHasta;
+    }
+
+    public CambioEstadoTurno() {
+
     }
     /*
         Inicio metodos gets, sets
     */
 
-    public Date getFechaHoraDesde() {
+    public LocalDateTime getFechaHoraDesde() {
         return fechaHoraDesde;
     }
 
-    public void setFechaHoraDesde(Date fechaHoraDesde) {
+    public void setFechaHoraDesde(LocalDateTime fechaHoraDesde) {
         this.fechaHoraDesde = fechaHoraDesde;
     }
 
-    public Date getFechaHoraHasta() {
+    public LocalDateTime getFechaHoraHasta() {
         return fechaHoraHasta;
     }
 
-    public void setFechaHoraHasta(Date fechaHoraHasta) {
+    public void setFechaHoraHasta(LocalDateTime fechaHoraHasta) {
         this.fechaHoraHasta = fechaHoraHasta;
     }
 
@@ -51,15 +55,17 @@ public class CambioEstadoTurno {
     public String mostrarCambioEstadoTurno(){
         return "mostrar cambio de estado turno";
     }
-
-    public Estado esActual(LocalDateTime horaFechaInicio, LocalDateTime horaFechaFin) {
-        if(getFechaHoraDesde().equals(horaFechaInicio) && getFechaHoraHasta().equals(horaFechaFin))
-            return mostrarEstado();
-        return null;
-
+/*
+    El metodo esActual() verifica que sea el ultimo estado comparando la fechaHoraHasta este vacia.
+    El metodo equals() compara dos fechas y devuelve true si son iguales.
+ */
+    public Boolean esActual() {
+        if(getFechaHoraHasta()==null)
+            return true;
+        return false;
     }
 
-    private Estado mostrarEstado() {
-        return getEstado();
+    public String mostrarEstado() {
+        return getEstado().getNombre();
     }
 }

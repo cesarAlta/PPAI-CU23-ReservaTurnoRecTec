@@ -30,6 +30,8 @@ public class RecursoTecnologico_DAO extends Conexion {
                 recursoTecnologico.setModelo(modelo);
                 TipoRecursoTecnologico_DAO tipoRecursoTecnologico_dao = new TipoRecursoTecnologico_DAO();
                 recursoTecnologico.setTipoRecursoTecnologico(tipoRecursoTecnologico_dao.obtenerTipo(rs.getInt("idTipoRecursoTec")));
+                Turno_DAO turno_dao = new Turno_DAO();
+                recursoTecnologico.setTurnos(turno_dao.listar(recursoTecnologico.getNumeroRT()));
                 lista.add(recursoTecnologico);
             }
             rs.close();
