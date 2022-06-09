@@ -11,27 +11,27 @@
             <Button fx:id="buttonReserva" layoutX="14.0" layoutY="25.0" mnemonicParsing="false" onMouseClicked="#onReservaButtonClicked" text="Reservar turno de recurso tecnologico" />
          </children>
       </AnchorPane>
-      <AnchorPane id="reservaPanel" fx:id="reservaPane" layoutY="74.0" prefHeight="492.0" prefWidth="635.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <AnchorPane id="reservaPanel" fx:id="reservaPane" layoutY="74.0" prefHeight="538.0" prefWidth="635.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <ComboBox fx:id="comboBoxTipoRecurso" layoutX="240.0" layoutY="14.0" onAction="#comboBoxEvents" prefHeight="26.0" prefWidth="226.0" />
+            <ComboBox fx:id="comboBoxTipoRecurso" layoutX="240.0" layoutY="14.0" onAction="#tomarSeleccionTipoRecurso" prefHeight="26.0" prefWidth="226.0" />
             <Label layoutX="128.0" layoutY="18.0" text="Tipo de recurso" />
             <Label layoutX="31.0" layoutY="52.0" text="Recurso" />
-            <TableView id="reservaPanel" fx:id="tablaRecursos" layoutX="31.0" layoutY="70.0" onMouseClicked="#selFila" prefHeight="140.0" prefWidth="536.0">
+            <TableView id="reservaPanel" fx:id="tablaRecursos" layoutX="31.0" layoutY="70.0" onMouseClicked="#selFila" prefHeight="158.0" prefWidth="536.0">
               <columns>
                 <TableColumn fx:id="colId" prefWidth="99.99993133544922" text="Nro inventario" />
                 <TableColumn fx:id="colMarca" prefWidth="97.5999755859375" text="marca" />
                   <TableColumn fx:id="colModelo" prefWidth="84.79998779296875" text="modelo" />
                   <TableColumn fx:id="colEstado" prefWidth="124.80001831054688" text="Estado" />
-                  <TableColumn fx:id="colSeleccion" prefWidth="124.80001831054688" text="Seleccion" />
+                  <TableColumn fx:id="colInstitucion" prefWidth="124.80001831054688" text="Institucion" />
               </columns>
             </TableView>
-            <Label layoutX="20.0" layoutY="248.0" text="Fecha" />
-            <DatePicker fx:id="calendarioTurnos" layoutX="62.0" layoutY="244.0" />
-            <ListView fx:id="tunosLista" layoutX="349.0" layoutY="244.0" prefHeight="161.0" prefWidth="210.0" />
-            <Label layoutX="349.0" layoutY="219.0" text="Turnos" />
-            <ScrollBar layoutX="551.0" layoutY="244.0" orientation="VERTICAL" prefHeight="162.0" prefWidth="14.0" />
-            <Button layoutX="476.0" layoutY="457.0" mnemonicParsing="false" onMouseClicked="#onConfirmarButtonClicked" prefHeight="26.0" prefWidth="90.0" text="Reservar" />
-            <Button layoutX="373.0" layoutY="457.0" mnemonicParsing="false" onMouseClicked="#onCancelButtonClicked" prefHeight="26.0" prefWidth="90.0" text="Cancelar" />
+            <Label layoutX="32.0" layoutY="273.0" text="Fecha" />
+            <DatePicker fx:id="calendarioTurnos" disable="true" layoutX="75.0" layoutY="269.0" onAction="#seccionFecha" />
+            <ListView fx:id="tunosLista" disable="true" layoutX="32.0" layoutY="330.0" prefHeight="140.0" prefWidth="338.0" />
+            <Label layoutX="33.0" layoutY="303.0" text="Turnos" />
+            <Button layoutX="518.0" layoutY="488.0" mnemonicParsing="false" onMouseClicked="#onConfirmarButtonClicked" prefHeight="26.0" prefWidth="90.0" text="Reservar" />
+            <Button layoutX="417.0" layoutY="488.0" mnemonicParsing="false" onMouseClicked="#onCancelButtonClicked" prefHeight="26.0" prefWidth="90.0" text="Cancelar" />
+            <Label fx:id="labSelccione" layoutX="33.0" layoutY="244.0" text="Seleccione una fecha" />
          </children>
       </AnchorPane>
       <AnchorPane id="confirmarPanel" fx:id="confirmarPane" layoutX="198.0" layoutY="223.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #e1e6ed; -fx-border-color: #000000;" visible="false">

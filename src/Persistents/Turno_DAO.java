@@ -10,23 +10,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Turno_DAO extends Conexion {
-    public List<Turno> listar(int numeroRT) throws SQLException {
-        Turno turnoRecTec = null;
+    public List<Turno> listar(int idRecTec) throws SQLException {
         List<Turno> turnos = new ArrayList<>();
         try {
             this.conectar();
-            PreparedStatement st = this.conexion.prepareStatement("SELECT * FROM turnos");
+            PreparedStatement st = this.conexion.prepareStatement("SELECT * FROM turnos where idRecursosTecnologicos = ? ");
+            st.setInt(1,idRecTec);
             ResultSet rs = st.executeQuery();
             while (rs.next()){
-                turnoRecTec = new Turno();
+                Turno turnoRecTec = new Turno();
                 turnoRecTec.setFechaGeneracion(rs.getDate("fechaGeneracion"));
                 turnoRecTec.setDiaSemana(rs.getString("diaSemana"));
                 turnoRecTec.setFechaHoraInicio(rs.getTimestamp("fechaHoraInicio").toLocalDateTime());
                 turnoRecTec.setFechaHoraFin(rs.getTimestamp("fechaHoraFin").toLocalDateTime());
-                CambioEstadoTurno_DAO cambioEstadoRT_dao= new CambioEstadoTurno_DAO();
-                turnoRecTec.setCambioEstadoTurnos(cambioEstadoRT_dao.listar(rs.getInt("idturnos")));
 
-
+                //Asigno los cambios de estadosTurnos asocaidos
+                CambioEstadoTurno_DAO cambioEstadoTurno_dao = new CambioEstadoTurno_DAO();
+                turnoRecTec.setCambioEstadoTurnos(cambioEstadoTurno_dao.listar(rs.getInt("idturnos")));
 
                 turnos.add(turnoRecTec);
             }

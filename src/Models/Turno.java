@@ -83,7 +83,7 @@ public class Turno {
         return false;
     }
 
-    public HashMap<String,String> mostrarDatos() {
+    public List<String> mostrarDatos() {
         LocalDateTime horaFechaInicio =  getFechaHoraInicio();
         LocalDateTime horaFechaFin =getFechaHoraFin();
         String estadoActual= null;
@@ -93,10 +93,10 @@ public class Turno {
                 estadoActual = cET.mostrarEstado();
         }
 
-        HashMap<String,String> datos = new HashMap<>();
-        datos.put("horaFechaInicio",horaFechaInicio.toString());
-        datos.put("horaFechaFin",horaFechaFin.toString());
-        datos.put("estado",estadoActual);
+        List<String> datos = new ArrayList<>();
+        datos.add(horaFechaInicio.toString());
+        datos.add(horaFechaFin.toString());
+        datos.add(estadoActual);
 
         return datos;
     }

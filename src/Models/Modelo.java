@@ -24,4 +24,9 @@ public class Modelo {
         Marca miMarca = marca;
         return  miMarca.getNombre();
     }
+
+    public String mostrarMarcayModelo(Marca marca) {
+        getNombre();
+        return obtenerMiMarca(marca);
+    }
 }

@@ -1,10 +1,7 @@
 package Controllers;
 
 import Models.*;
-import Persistents.CambioEstadoRT_DAO;
-import Persistents.Marca_DAO;
-import Persistents.RecursoTecnologico_DAO;
-import Persistents.TipoRecursoTecnologico_DAO;
+import Persistents.*;
 import Views.Controller;
 import Views.TablaRecursosTec;
 import javafx.scene.control.Button;
@@ -18,13 +15,26 @@ public class GestorRegTurnoRecTec {
     private List<TipoRecursoTecnologico> tipoRecTecnologicos;
     private  List<RecursoTecnologico> recTecActivosReservables;
     private RecursoTecnologico recursoTecnologicoSeleccionado=null;
-    private List<HashMap> turnosRecTecnologicoSeleccionado;
+    private List<List<String>> turnosRecTecnologicoSeleccionado;
     private LocalDateTime fechaHoraActual;
 
     public GestorRegTurnoRecTec(Controller controller) {
         this.controller = controller;
     }
 
+    public void nuevaReservaTurnoDeRecursoTecnologico()  {
+        try {
+            buscarTipoRecurso();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        controller.pedirSeleccionTipoRecurso(this.tipoRecTecnologicos);
+    }
+
+    public void buscarTipoRecurso() throws Exception {
+        TipoRecursoTecnologico_DAO tipoRecTecnologicoDAO = new TipoRecursoTecnologico_DAO();
+        tipoRecTecnologicos=  tipoRecTecnologicoDAO.listar();
+    }
     public void recursoTecnologicoSeeccionado(TablaRecursosTec trecSelec) {
         for(RecursoTecnologico recTec: recTecActivosReservables){
             if(recTec.getNumeroRT() == trecSelec.getIdRec())
@@ -40,37 +50,35 @@ public class GestorRegTurnoRecTec {
         return true;
     }
 
-    public void opcionReservarTurnoDeRecursoTecnologico(){
-        try {
-            tipoRecTecnologicos = buscarTipoRecurso();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-    public List<TipoRecursoTecnologico> buscarTipoRecurso() throws Exception {
-        TipoRecursoTecnologico_DAO tipoRecTecnologicoDAO = new TipoRecursoTecnologico_DAO();
-        List<TipoRecursoTecnologico> tiposRecTecnologicos=  tipoRecTecnologicoDAO.listar();
-        return tiposRecTecnologicos;
-    }
+
+
 
     public List<TipoRecursoTecnologico> getTipo(){ return tipoRecTecnologicos; }
 
-    public List<TablaRecursosTec> tomarSeleccionTipoRecurso(String tipoRecursoTecnologico) throws Exception {
+    public void tomarSeleccionTipoRecurso(String tipoRecursoTecnologico) throws Exception {
 
+        //Obtenemos los recursos tecnologicos de acuerdo al tipo de recurso tecnologico seleccionado
         recTecActivosReservables =  obtenerRecursoTecnologogicoActivo(tipoRecursoTecnologico);
         List<TablaRecursosTec> tablaRecursosTecs = new ArrayList<>();
-        for( RecursoTecnologico rt : recTecActivosReservables){
-            TablaRecursosTec trt = new TablaRecursosTec();
-            trt.setIdRec(rt.getNumeroRT());
-            trt.setModelo(rt.getModelo().getNombre());
+
+        for( RecursoTecnologico rt : recTecActivosReservables) {
             Marca_DAO marca_dao = new Marca_DAO();
-            trt.setMarca(rt.getModelo().obtenerMiMarca(marca_dao.obtenerDatos(rt.getModelo().getNombre())));
-           trt.setEstado( rt.getCambioEstadoRT().get(rt.getCambioEstadoRT().size()-1).getEstado().getNombre());
-           trt.setButton(new Button("Ver"));
+            CentroDeInvestigacion_DAO centroDeInvestigacion_dao = new CentroDeInvestigacion_DAO();
+
+            String datos[] = rt.mostrarDatosRecursoTecnologico(centroDeInvestigacion_dao.obtenerDatos(rt.getNumeroRT()), marca_dao.obtenerDatos(rt.getModelo().getNombre()));
+
+            TablaRecursosTec trt = new TablaRecursosTec();
+            trt.setIdRec(Integer.parseInt(datos[0]));
+            trt.setEstado(datos[1]);
+            trt.setMarca(datos[4]);
+            trt.setModelo(datos[3]);
+            trt.setCentroInvestigacion(datos[2]);
+
             tablaRecursosTecs.add(trt);
         }
-        return tablaRecursosTecs;
+
+        controller.pedirSeleccionRecursoTecnologico(tablaRecursosTecs);
     }
 
     public List<RecursoTecnologico> obtenerRecursoTecnologogicoActivo(String tipoRecursoTecnologico) throws Exception {
@@ -79,8 +87,6 @@ public class GestorRegTurnoRecTec {
 
         for (RecursoTecnologico rt : recursoTecnologico_dao.listar()) {
             if (rt.esDeTipoRecursoTecnologicoSeleccionado(tipoRecursoTecnologico)) {
-                CambioEstadoRT_DAO cambioEstadoRT_dao = new CambioEstadoRT_DAO();
-                rt.setCambioEstadoRT(cambioEstadoRT_dao.listar(rt.getNumeroRT()));
                 if (rt.esReservable()) {
                     recursosTecnologicos.add(rt);
                 }

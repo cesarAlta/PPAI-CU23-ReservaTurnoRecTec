@@ -2,15 +2,9 @@ package Views;
 
 
 import Controllers.GestorRegTurnoRecTec;
-import Models.RecursoTecnologico;
 import Models.TipoRecursoTecnologico;
-import com.mysql.cj.result.LocalDateTimeValueFactory;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -26,7 +20,6 @@ import javafx.util.Callback;
 import java.net.URL;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 //el controlador debe inicializar de una fomra cuando arranque la pantalla entonces hacemos que implemente el metodo inizializable
@@ -44,27 +37,13 @@ public class Controller implements Initializable {
     @FXML private TableColumn colMarca;
     @FXML private TableColumn colModelo;
     @FXML private TableColumn colEstado;
-    @FXML private TableColumn colSeleccion;
+    @FXML private TableColumn colInstitucion;
     GestorRegTurnoRecTec gestorRegTurnoRecTec;
     // aqui describimos que pasa cuando inicializa el controlador
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         gestorRegTurnoRecTec = new GestorRegTurnoRecTec(this);
-        gestorRegTurnoRecTec.opcionReservarTurnoDeRecursoTecnologico();
-        pedirSeleccionTipoRecurso(gestorRegTurnoRecTec.getTipo());
-
-        /*
-        List<TipoRecursoTecnologico> tiposRecTecnologicos = new ArrayList<>();
-        TipoRecursoTecnologico_DAO tipoRecTecDAO = new TipoRecursoTecnologico_DAO();
-        try {
-            tiposRecTecnologicos = tipoRecTecDAO.listar();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // cargo el combobox
-        comboBoxTipoRecurso.getItems().addAll(tiposRecTecnologicos);
-        */
-
+        gestorRegTurnoRecTec.nuevaReservaTurnoDeRecursoTecnologico();
     }
     public void onReservaButtonClicked(MouseEvent event){
         reservaPane.setVisible(true);
@@ -81,24 +60,16 @@ public class Controller implements Initializable {
     }
     //deberia ser el tomar selecion del combo
     @FXML
-    public void comboBoxEvents() throws Exception {
-        String
-            tipo = comboBoxTipoRecurso.getSelectionModel().getSelectedItem().toString();
+    public void tomarSeleccionTipoRecurso() throws Exception {
+        String tipo = comboBoxTipoRecurso.getSelectionModel().getSelectedItem().toString();
+        gestorRegTurnoRecTec.tomarSeleccionTipoRecurso(tipo);
 
-       tomarSeleccionTipoRecurso(tipo);
     }
 // relleno el combo para que seleccione el tipo
    public void pedirSeleccionTipoRecurso(List<TipoRecursoTecnologico> tiposRecTecno){
         comboBoxTipoRecurso.getItems().addAll(tiposRecTecno);
     }
-    // una vez que se selecciona el tipo de recurso
-public void tomarSeleccionTipoRecurso(String tipoSeleccionado) throws Exception {
-        List<TablaRecursosTec> tablaRecTecs = gestorRegTurnoRecTec.tomarSeleccionTipoRecurso(comboBoxTipoRecurso.getSelectionModel().getSelectedItem().toString());
-        mostrarRecursos(tablaRecTecs);
-    }
-
-    public void mostrarRecursos(List tablaRecursos){
-
+    public void pedirSeleccionRecursoTecnologico(List<TablaRecursosTec> tablaRecursos) {
 
         ObservableList<TablaRecursosTec> rectecno = FXCollections.observableArrayList(tablaRecursos);
        this.tablaRecursos.setItems(rectecno);
@@ -106,7 +77,7 @@ public void tomarSeleccionTipoRecurso(String tipoSeleccionado) throws Exception 
         this.colMarca.setCellValueFactory(new PropertyValueFactory("marca"));
         this.colModelo.setCellValueFactory(new PropertyValueFactory<>("modelo"));
         this.colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
-        this.colSeleccion.setCellValueFactory((new PropertyValueFactory<>("button")));
+        this.colInstitucion.setCellValueFactory((new PropertyValueFactory<>("centroInvestigacion")));
 
     }
 //tablaRecursos.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) ->mostrarAlertError() ));
@@ -114,14 +85,15 @@ public void tomarSeleccionTipoRecurso(String tipoSeleccionado) throws Exception 
     public void selFila(MouseEvent event){
        TablaRecursosTec trecSelec = tablaRecursos.getSelectionModel().getSelectedItem();
        gestorRegTurnoRecTec.recursoTecnologicoSeeccionado(trecSelec);
-        if(trecSelec != null){
+       calendarioTurnos.setDisable(false);
+        /*if(trecSelec != null){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText(null);
             alert.setTitle(trecSelec.getMarca());
             alert.setContentText(trecSelec.getModelo());
             alert.showAndWait();
         }else
-            mostrarAlertError();
+            mostrarAlertError();*/
     }
 
     @FXML
@@ -133,15 +105,16 @@ public void tomarSeleccionTipoRecurso(String tipoSeleccionado) throws Exception 
         alert.showAndWait();
     }
 
-
-    public void pedirSeleccionTurno(List<HashMap> turnosRecTecnologicoSeleccionado) {
+private List<List<String>> tuenos;
+    public void pedirSeleccionTurno(List<List<String>> turnosRecTecnologicoSeleccionado) {
+        this.tuenos = turnosRecTecnologicoSeleccionado;
         Callback<DatePicker, DateCell> dayCellFactory = dp -> new DateCell(){
             @Override
             public void updateItem(LocalDate item, boolean empty) {
 
                 super.updateItem(item, empty);
 
-                this.setDisable(false);
+                this.setDisable(true);
                 this.setBackground(null);
                 this.setTextFill(Color.BLACK);
 
@@ -149,21 +122,21 @@ public void tomarSeleccionTipoRecurso(String tipoSeleccionado) throws Exception 
                 if (item.isBefore(LocalDate.now())) {
                     this.setDisable(true);
                 }
-/*
+
                 for (int i = 0; i < turnosRecTecnologicoSeleccionado.size(); i++) {
                     // pintar de verde los dias con turnos disponibles.
-                    if(item.equals((Date)turnosRecTecnologicoSeleccionado.get(i).get("horaFechaInicio"))){
-                        Paint color = Color.GREEN;
-                        BackgroundFill fill = new BackgroundFill(color,null,null);
-                        this.setBackground(new Background(fill));
-                        this.setTextFill(Color.WHITESMOKE);
+                        String sDate = turnosRecTecnologicoSeleccionado.get(i).get(0).substring(0,10);
+                        if(item.toString().equals(sDate)){
+                            Paint color = Color.GREEN;
+                            BackgroundFill fill = new BackgroundFill(color,null,null);
+                            this.setDisable(false);
+                            this.setBackground(new Background(fill));
+                            this.setTextFill(Color.WHITESMOKE);
                     }
-
-
                 }
-*/
 
-                // marcar los dias de quincena
+
+                // ejemplo marcar los dias en rojo para los que no haya turno
                 int day = item.getDayOfMonth();
                 if (day == 15 || day == 30) {
 
@@ -184,6 +157,21 @@ public void tomarSeleccionTipoRecurso(String tipoSeleccionado) throws Exception 
             }
         };
         this.calendarioTurnos.setDayCellFactory(dayCellFactory);
-        this.tunosLista.getItems().addAll(turnosRecTecnologicoSeleccionado);
+        //this.tunosLista.getItems().addAll(turnosRecTecnologicoSeleccionado);
     }
+
+    public void seccionFecha(){
+        this.tunosLista.setDisable(false);
+        tunosLista.getItems().clear();
+        for (int i = 0; i < tuenos.size(); i++) {
+           // String date = calendarioTurnos.getValue().toString();
+            if(tuenos.get(i).get(0).substring(0,10).equals(calendarioTurnos.getValue().toString())){
+                this.tunosLista.getItems().add(tuenos.get(i).get(0).substring(11,16) +" a "+ tuenos.get(i).get(1).substring(11,16) +  tuenos.get(i).get(2));
+
+            }
+        }
+
+    }
+
+
 }

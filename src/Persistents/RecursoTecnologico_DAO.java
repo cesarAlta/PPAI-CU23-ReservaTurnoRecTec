@@ -25,13 +25,24 @@ public class RecursoTecnologico_DAO extends Conexion {
                 recursoTecnologico.setImagenes(rs.getString("imagenes"));
                 recursoTecnologico.setPeriodicidadMantenimientoPrev(rs.getInt("duracionMantenimineto"));
                 recursoTecnologico.setFraccionTurnos(rs.getInt("fraccionHorariaTurnos"));
+
+                //Asigno el modelo asiciado
                 Modelo_DAO modelo_dao = new Modelo_DAO();
-                Modelo modelo = modelo_dao.obtenerDatos(rs.getInt("idmodelos"));
-                recursoTecnologico.setModelo(modelo);
+                recursoTecnologico.setModelo(modelo_dao.obtenerDatos(rs.getInt("idmodelos")));
+
+                //Asigno el tipo de recurso asociado
                 TipoRecursoTecnologico_DAO tipoRecursoTecnologico_dao = new TipoRecursoTecnologico_DAO();
                 recursoTecnologico.setTipoRecursoTecnologico(tipoRecursoTecnologico_dao.obtenerTipo(rs.getInt("idTipoRecursoTec")));
+
+                //Asigno los turnos asicuado
                 Turno_DAO turno_dao = new Turno_DAO();
                 recursoTecnologico.setTurnos(turno_dao.listar(recursoTecnologico.getNumeroRT()));
+
+                //Asigno los cambios de estados asociados.
+                CambioEstadoRT_DAO cambioEstadoRT_dao = new CambioEstadoRT_DAO();
+                recursoTecnologico.setCambioEstadoRT(cambioEstadoRT_dao.listar(recursoTecnologico.getNumeroRT()));
+
+                //Agrego a la lista
                 lista.add(recursoTecnologico);
             }
             rs.close();

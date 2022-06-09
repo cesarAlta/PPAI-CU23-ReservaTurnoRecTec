@@ -53,6 +53,10 @@ public class CentroDeInvestigacion {
         this.motivoBaja = motivoBaja;
     }
 
+    public CentroDeInvestigacion() {
+
+    }
+
     /*
         Inicio de metodos get y set
     */

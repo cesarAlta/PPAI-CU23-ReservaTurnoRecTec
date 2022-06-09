@@ -34,8 +34,6 @@ public class TipoRecursoTecnologico_DAO extends Conexion {
         return tipoRecursoTecnologico;
     }
 
-
-
     public List<TipoRecursoTecnologico> listar() throws Exception{
         List<TipoRecursoTecnologico> lista = null;
         try {

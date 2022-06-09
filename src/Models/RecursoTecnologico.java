@@ -129,13 +129,32 @@ public class RecursoTecnologico {
     public void nuevoMantenimietoPreventivo(){}
     public void misTurnosDisponibles(){}
 
-    public List<HashMap> mostrarTurnos(LocalDateTime fechaHoraActual) {
-        List<HashMap> datosTrunos = new ArrayList<>();
+    public List<List<String>> mostrarTurnos(LocalDateTime fechaHoraActual) {
+        List<List<String>> datosTrunos = new ArrayList<>();
         for(Turno turno: getTurnos()){
             if(turno.esPosteriorFechaActual(fechaHoraActual)){
                 datosTrunos.add(turno.mostrarDatos());
             }
         }
         return datosTrunos;
+    }
+
+    public String[] mostrarDatosRecursoTecnologico(CentroDeInvestigacion centroDInvest,Marca marca) {
+        String numeroInventarioRT = String.valueOf(getNumeroRT());
+        //hay que mejorar este codigo
+        String estadoRT = getCambioEstadoRT().get(getCambioEstadoRT().size()-1).getEstado().getNombre();
+        String nombreCentroInvestigacvion = obtenerCentroDeInvestigacion(centroDInvest);
+        String modeloRT = getModelo().getNombre();
+        String marcaRT = mostrarMarcayModelo(marca);
+
+       return  new String[]{numeroInventarioRT,estadoRT,nombreCentroInvestigacvion,modeloRT,marcaRT};
+    }
+
+    private String obtenerCentroDeInvestigacion(CentroDeInvestigacion centroDInvest) {
+        return centroDInvest.getNombre();
+    }
+
+    private String mostrarMarcayModelo(Marca marca) {
+        return getModelo().mostrarMarcayModelo(marca);
     }
 }

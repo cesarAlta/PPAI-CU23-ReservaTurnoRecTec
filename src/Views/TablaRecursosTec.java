@@ -7,7 +7,7 @@ public class TablaRecursosTec {
     private  String marca;
     private  String modelo;
     private  String estado;
-    private Button button;
+    private String centroInvestigacion;
 
     public int getIdRec() {
         return idRec;
@@ -41,11 +41,11 @@ public class TablaRecursosTec {
         this.estado = estado;
     }
 
-    public Button getButton() {
-        return button;
+    public String getCentroInvestigacion() {
+        return centroInvestigacion;
     }
 
-    public void setButton(Button button) {
-        this.button = button;
+    public void setCentroInvestigacion(String centroInvestigacion) {
+        this.centroInvestigacion = centroInvestigacion;
     }
 }

@@ -10,8 +10,7 @@ import java.sql.SQLException;
 public class Estado_DAO extends Conexion{
 
     public Estado obtenerDatos(int idEstado) throws SQLException {
-        Estado estado
-                = null;
+        Estado estado= null;
         try {
             this.conectar();
             PreparedStatement st = this.conexion.prepareStatement("SELECT * FROM estados where idestados= ?");
@@ -22,8 +21,8 @@ public class Estado_DAO extends Conexion{
                 estado.setNombre(rs.getString("nombre"));
                 estado.setDescripcion(rs.getString("descripcion"));
                 estado.setAmbito(rs.getString("ambito"));
-                estado.setEsReservable(rs.getString("esReservable").equals("si")? true : false);
-                estado.setEsCancelable(rs.getString("esCancelable").equals("si")? true : false);
+                estado.setEsReservable(rs.getString("esReservable").equals("si"));
+                estado.setEsCancelable(rs.getString("esCancelable").equals("si"));
             }
             rs.close();
             st.close();
