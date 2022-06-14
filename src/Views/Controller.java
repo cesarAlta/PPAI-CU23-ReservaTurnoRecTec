@@ -71,6 +71,7 @@ public class Controller implements Initializable {
     }
     public void pedirSeleccionRecursoTecnologico(List<TablaRecursosTec> tablaRecursos) {
 
+        // establecer los colores para los diferentes tipos de estados.
         ObservableList<TablaRecursosTec> rectecno = FXCollections.observableArrayList(tablaRecursos);
        this.tablaRecursos.setItems(rectecno);
         this.colId.setCellValueFactory(new PropertyValueFactory("idRec"));
@@ -127,7 +128,7 @@ private List<List<String>> tuenos;
                     // pintar de verde los dias con turnos disponibles.
                         String sDate = turnosRecTecnologicoSeleccionado.get(i).get(0).substring(0,10);
                         if(item.toString().equals(sDate)){
-                            Paint color = Color.GREEN;
+                            Paint color = Color.BLUE;
                             BackgroundFill fill = new BackgroundFill(color,null,null);
                             this.setDisable(false);
                             this.setBackground(new Background(fill));

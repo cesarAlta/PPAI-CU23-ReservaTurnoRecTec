@@ -140,12 +140,14 @@ public class RecursoTecnologico {
     }
 
     public String[] mostrarDatosRecursoTecnologico(CentroDeInvestigacion centroDInvest,Marca marca) {
+
         String numeroInventarioRT = String.valueOf(getNumeroRT());
-        //hay que mejorar este codigo
+        //hay que mejorar este codigo, creeemos que deberia guardarse el ultimo cambio de estado o volver a preguntar por el mismo.
         String estadoRT = getCambioEstadoRT().get(getCambioEstadoRT().size()-1).getEstado().getNombre();
         String nombreCentroInvestigacvion = obtenerCentroDeInvestigacion(centroDInvest);
-        String modeloRT = getModelo().getNombre();
-        String marcaRT = mostrarMarcayModelo(marca);
+        String[] marcaYModelo = mostrarMarcayModelo(marca);
+        String modeloRT = marcaYModelo[0];
+        String marcaRT = marcaYModelo[1];
 
        return  new String[]{numeroInventarioRT,estadoRT,nombreCentroInvestigacvion,modeloRT,marcaRT};
     }
@@ -154,7 +156,7 @@ public class RecursoTecnologico {
         return centroDInvest.getNombre();
     }
 
-    private String mostrarMarcayModelo(Marca marca) {
+    private String[] mostrarMarcayModelo(Marca marca) {
         return getModelo().mostrarMarcayModelo(marca);
     }
 }

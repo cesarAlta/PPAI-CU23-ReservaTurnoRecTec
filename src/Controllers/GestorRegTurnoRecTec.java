@@ -12,17 +12,22 @@ import java.util.*;
 
 public class GestorRegTurnoRecTec {
     private Controller controller;
+    // lista de tipos de recursos tecnologicos.
     private List<TipoRecursoTecnologico> tipoRecTecnologicos;
     private  List<RecursoTecnologico> recTecActivosReservables;
-    private RecursoTecnologico recursoTecnologicoSeleccionado=null;
+    private RecursoTecnologico recursoTecnologicoSeleccionado = null;
     private List<List<String>> turnosRecTecnologicoSeleccionado;
     private LocalDateTime fechaHoraActual;
+    private Usuario usuarioActual;
+
 
     public GestorRegTurnoRecTec(Controller controller) {
         this.controller = controller;
     }
 
     public void nuevaReservaTurnoDeRecursoTecnologico()  {
+        // verificar si el usuario va aqui o en el contructor
+        usuarioActual = new Usuario("1234", "neuen" , true);
         try {
             buscarTipoRecurso();
         } catch (Exception e) {
@@ -31,15 +36,21 @@ public class GestorRegTurnoRecTec {
         controller.pedirSeleccionTipoRecurso(this.tipoRecTecnologicos);
     }
 
-    public void buscarTipoRecurso() throws Exception {
+    private void buscarTipoRecurso() throws Exception {
         TipoRecursoTecnologico_DAO tipoRecTecnologicoDAO = new TipoRecursoTecnologico_DAO();
-        tipoRecTecnologicos=  tipoRecTecnologicoDAO.listar();
+        tipoRecTecnologicos =  tipoRecTecnologicoDAO.listar();
+        // implementar el metodo *getNombre() terminar de implementar
+        List<String> nombresRecTecnologicos = new ArrayList<>();
+        for(TipoRecursoTecnologico trc : tipoRecTecnologicos){
+            nombresRecTecnologicos.add(trc.getNombre());
+        }
     }
     public void recursoTecnologicoSeeccionado(TablaRecursosTec trecSelec) {
         for(RecursoTecnologico recTec: recTecActivosReservables){
             if(recTec.getNumeroRT() == trecSelec.getIdRec())
                 recursoTecnologicoSeleccionado = recTec;
         }
+        // terminar de implementar.
         if (verificarCentroInvestigacionCientificoLogueado()){
             obtenerTurnosRecursoTecnologogicoSeleccionado();
             obtenerFechaHoraActual();
@@ -50,10 +61,6 @@ public class GestorRegTurnoRecTec {
         return true;
     }
 
-
-
-
-
     public List<TipoRecursoTecnologico> getTipo(){ return tipoRecTecnologicos; }
 
     public void tomarSeleccionTipoRecurso(String tipoRecursoTecnologico) throws Exception {
@@ -62,12 +69,16 @@ public class GestorRegTurnoRecTec {
         recTecActivosReservables =  obtenerRecursoTecnologogicoActivo(tipoRecursoTecnologico);
         List<TablaRecursosTec> tablaRecursosTecs = new ArrayList<>();
 
+        //mientras exitan rectec seleccionados y activos.
         for( RecursoTecnologico rt : recTecActivosReservables) {
             Marca_DAO marca_dao = new Marca_DAO();
             CentroDeInvestigacion_DAO centroDeInvestigacion_dao = new CentroDeInvestigacion_DAO();
 
-            String datos[] = rt.mostrarDatosRecursoTecnologico(centroDeInvestigacion_dao.obtenerDatos(rt.getNumeroRT()), marca_dao.obtenerDatos(rt.getModelo().getNombre()));
+            // creo un arreglo para colocar los datos obtenidos
+            CentroDeInvestigacion ci = centroDeInvestigacion_dao.obtenerDatos(rt.getNumeroRT());
+            Marca marca = marca_dao.obtenerDatos(rt.getModelo().getNombre());
 
+            String datos[] = rt.mostrarDatosRecursoTecnologico(ci, marca);
             TablaRecursosTec trt = new TablaRecursosTec();
             trt.setIdRec(Integer.parseInt(datos[0]));
             trt.setEstado(datos[1]);
@@ -77,6 +88,8 @@ public class GestorRegTurnoRecTec {
 
             tablaRecursosTecs.add(trt);
         }
+        // implementar, pasar por parametro el arreglo de rectec
+        agruparYOrdenar();
 
         controller.pedirSeleccionRecursoTecnologico(tablaRecursosTecs);
     }

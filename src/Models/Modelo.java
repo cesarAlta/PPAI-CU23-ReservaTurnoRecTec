@@ -19,14 +19,13 @@ public class Modelo {
         this.nombre = nombre;
     }
     public void mostrarModelos(){}
-
+/*
     public String obtenerMiMarca(Marca marca) {
         Marca miMarca = marca;
         return  miMarca.getNombre();
     }
-
-    public String mostrarMarcayModelo(Marca marca) {
-        getNombre();
-        return obtenerMiMarca(marca);
+*/
+    public String[] mostrarMarcayModelo(Marca marca) {
+        return new String[]{getNombre(), marca.getNombre()};
     }
 }

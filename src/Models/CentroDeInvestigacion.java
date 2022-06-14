@@ -53,6 +53,13 @@ public class CentroDeInvestigacion {
         this.motivoBaja = motivoBaja;
     }
 
+    public CentroDeInvestigacion(String nombre, String sigla, String direccion, String edificio) {
+        this.nombre = nombre;
+        this.sigla = sigla;
+        this.direccion = direccion;
+        this.edificio = edificio;
+    }
+
     public CentroDeInvestigacion() {
 
     }
