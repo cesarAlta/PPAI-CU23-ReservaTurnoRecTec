@@ -1,6 +1,7 @@
 package Models;
 
 import javax.xml.bind.PrintConversionEvent;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +26,7 @@ public class CentroDeInvestigacion {
     private int tiempoAntelacionReserva;
     private Date fechaBaja;
     private String motivoBaja;
-    private AsignacionCientificoDelCI asignacionCientificoDelCI;
+    private List<AsignacionCientificoDelCI> asignacionesCientificoDelCIs;
     private RecursoTecnologico[] recursoTecnologico;
     /*
        Constructor
@@ -195,6 +196,14 @@ public class CentroDeInvestigacion {
         this.motivoBaja = motivoBaja;
     }
 
+    public List<AsignacionCientificoDelCI> getAsignacionesCientificoDelCIs() {
+        return asignacionesCientificoDelCIs;
+    }
+
+    public void setAsignacionesCientificoDelCIs(List<AsignacionCientificoDelCI> asignacionesCientificoDelCIs) {
+        this.asignacionesCientificoDelCIs = asignacionesCientificoDelCIs;
+    }
+
     /*
         Fin de metodos get y set
     */
@@ -229,5 +238,13 @@ public class CentroDeInvestigacion {
 
     }
 
+    public void esAsignado() {
+      //  for ( AsignacionCientificoDelCI asignacionCientCI : getAsignacionesCientificoDelCIs()){
+     //           asignacionCientCI.esTuCientifico();
+    //    };
+    }
 
+    public void asignarTurno(List<String> turno) {
+        AsignacionCientificoDelCI nuevo = new AsignacionCientificoDelCI(LocalDateTime.parse(turno.get(0)), LocalDateTime.parse(turno.get(1)));
+    }
 }

@@ -16,7 +16,7 @@
             <ComboBox fx:id="comboBoxTipoRecurso" layoutX="240.0" layoutY="14.0" onAction="#tomarSeleccionTipoRecurso" prefHeight="26.0" prefWidth="226.0" />
             <Label layoutX="128.0" layoutY="18.0" text="Tipo de recurso" />
             <Label layoutX="31.0" layoutY="52.0" text="Recurso" />
-            <TableView id="reservaPanel" fx:id="tablaRecursos" layoutX="31.0" layoutY="70.0" onMouseClicked="#selFila" prefHeight="158.0" prefWidth="536.0">
+            <TableView id="reservaPanel" fx:id="tablaRecursos" layoutX="31.0" layoutY="70.0" onMouseClicked="#seleccionRecursoTecnologico" prefHeight="158.0" prefWidth="536.0">
               <columns>
                 <TableColumn fx:id="colId" prefWidth="99.99993133544922" text="Nro inventario" />
                 <TableColumn fx:id="colMarca" prefWidth="97.5999755859375" text="marca" />
@@ -27,7 +27,7 @@
             </TableView>
             <Label layoutX="32.0" layoutY="273.0" text="Fecha" />
             <DatePicker fx:id="calendarioTurnos" disable="true" layoutX="75.0" layoutY="269.0" onAction="#seccionFecha" />
-            <ListView fx:id="tunosLista" disable="true" layoutX="32.0" layoutY="330.0" prefHeight="140.0" prefWidth="338.0" />
+            <ListView fx:id="tunosLista" disable="true" layoutX="32.0" layoutY="330.0" onMouseClicked="#turnoSeleccionado" prefHeight="140.0" prefWidth="338.0" />
             <Label layoutX="33.0" layoutY="303.0" text="Turnos" />
             <Button layoutX="518.0" layoutY="488.0" mnemonicParsing="false" onMouseClicked="#onConfirmarButtonClicked" prefHeight="26.0" prefWidth="90.0" text="Reservar" />
             <Button layoutX="417.0" layoutY="488.0" mnemonicParsing="false" onMouseClicked="#onCancelButtonClicked" prefHeight="26.0" prefWidth="90.0" text="Cancelar" />

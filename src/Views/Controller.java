@@ -3,6 +3,8 @@ package Views;
 
 import Controllers.GestorRegTurnoRecTec;
 import Models.TipoRecursoTecnologico;
+import Models.Turno;
+import com.sun.xml.internal.ws.api.server.Adapter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,6 +20,7 @@ import javafx.scene.paint.Paint;
 import javafx.util.Callback;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
@@ -25,11 +28,11 @@ import java.util.*;
 //el controlador debe inicializar de una fomra cuando arranque la pantalla entonces hacemos que implemente el metodo inizializable
 
 public class Controller implements Initializable {
-    //atributos de los panelel
+
+    //atributos de la pantallas
     @FXML private AnchorPane reservaPane;
     @FXML private AnchorPane confirmarPane;
-
-    @FXML private ComboBox<TipoRecursoTecnologico> comboBoxTipoRecurso;
+    @FXML private ComboBox<String> comboBoxTipoRecurso;
     @FXML private TableView<TablaRecursosTec> tablaRecursos;
     @FXML private DatePicker calendarioTurnos;
     @FXML private ListView tunosLista;
@@ -58,22 +61,24 @@ public class Controller implements Initializable {
         reservaPane.setDisable(false);
         confirmarPane.setVisible(false);
     }
-    //deberia ser el tomar selecion del combo
-    @FXML
-    public void tomarSeleccionTipoRecurso() throws Exception {
-        String tipo = comboBoxTipoRecurso.getSelectionModel().getSelectedItem().toString();
-        gestorRegTurnoRecTec.tomarSeleccionTipoRecurso(tipo);
 
-    }
-// relleno el combo para que seleccione el tipo
-   public void pedirSeleccionTipoRecurso(List<TipoRecursoTecnologico> tiposRecTecno){
+    // Relleno el combo para que seleccione el tipo
+   public void pedirSeleccionTipoRecurso(List<String> tiposRecTecno){
         comboBoxTipoRecurso.getItems().addAll(tiposRecTecno);
     }
+
+    //Tomamos la seleccion del comboBox
+    @FXML
+    public void tomarSeleccionTipoRecurso() throws Exception {
+        String tipoRecSeleccionado = comboBoxTipoRecurso.getSelectionModel().getSelectedItem().toString();
+        gestorRegTurnoRecTec.tomarSeleccionTipoRecurso(tipoRecSeleccionado);
+    }
+
     public void pedirSeleccionRecursoTecnologico(List<TablaRecursosTec> tablaRecursos) {
 
         // establecer los colores para los diferentes tipos de estados.
         ObservableList<TablaRecursosTec> rectecno = FXCollections.observableArrayList(tablaRecursos);
-       this.tablaRecursos.setItems(rectecno);
+        this.tablaRecursos.setItems(rectecno);
         this.colId.setCellValueFactory(new PropertyValueFactory("idRec"));
         this.colMarca.setCellValueFactory(new PropertyValueFactory("marca"));
         this.colModelo.setCellValueFactory(new PropertyValueFactory<>("modelo"));
@@ -83,7 +88,7 @@ public class Controller implements Initializable {
     }
 //tablaRecursos.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) ->mostrarAlertError() ));
 
-    public void selFila(MouseEvent event){
+    public void seleccionRecursoTecnologico(MouseEvent event){
        TablaRecursosTec trecSelec = tablaRecursos.getSelectionModel().getSelectedItem();
        gestorRegTurnoRecTec.recursoTecnologicoSeeccionado(trecSelec);
        calendarioTurnos.setDisable(false);
@@ -161,18 +166,40 @@ private List<List<String>> tuenos;
         //this.tunosLista.getItems().addAll(turnosRecTecnologicoSeleccionado);
     }
 
+private String fechaseleccionada;
+
     public void seccionFecha(){
+        fechaseleccionada = calendarioTurnos.getValue().toString();
         this.tunosLista.setDisable(false);
         tunosLista.getItems().clear();
         for (int i = 0; i < tuenos.size(); i++) {
-           // String date = calendarioTurnos.getValue().toString();
-            if(tuenos.get(i).get(0).substring(0,10).equals(calendarioTurnos.getValue().toString())){
+            if(tuenos.get(i).get(0).substring(0,10).equals(fechaseleccionada)){
                 this.tunosLista.getItems().add(tuenos.get(i).get(0).substring(11,16) +" a "+ tuenos.get(i).get(1).substring(11,16) +  tuenos.get(i).get(2));
 
             }
         }
 
     }
+    private String turnoSele;
+
+    public void turnoSeleccionado(){
+        String itemSeleccioandoTurno = this.tunosLista.getSelectionModel().getSelectedItem().toString();
+        List<String> tunoSeleccionado = new ArrayList<>();
+        //fechahora desde
+        tunoSeleccionado.add(fechaseleccionada+"T"+itemSeleccioandoTurno.substring(0,5));
+        //fechahora hasta
+        tunoSeleccionado.add(fechaseleccionada+"T"+itemSeleccioandoTurno.substring(8,13));
+
+        gestorRegTurnoRecTec.turnoSeleccionado(tunoSeleccionado);
+
+    }
 
 
+    public void pedirConfirmacionReserva() {
+
+    }
+
+    public void sconfirmacionReserva() throws SQLException {
+        gestorRegTurnoRecTec.reservarRecursoTecnologico();
+    }
 }

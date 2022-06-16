@@ -2,7 +2,7 @@ package Views;
 
 import javafx.scene.control.Button;
 
-public class TablaRecursosTec {
+public class TablaRecursosTec implements Comparable<TablaRecursosTec>{
     private  int idRec;
     private  String marca;
     private  String modelo;
@@ -47,5 +47,10 @@ public class TablaRecursosTec {
 
     public void setCentroInvestigacion(String centroInvestigacion) {
         this.centroInvestigacion = centroInvestigacion;
+    }
+// implementamos el metodo de la interface para comparar los nombres de los centros de investigacion
+    @Override
+    public int compareTo(TablaRecursosTec tablaRecursosTec) {
+        return getCentroInvestigacion().compareTo(tablaRecursosTec.getCentroInvestigacion());
     }
 }

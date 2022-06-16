@@ -62,4 +62,10 @@ public class Estado {
     public String mostrarEstado(){
         return "mostrar estado";
     }
+
+    public boolean esAmbitoTurno() {
+        if(getAmbito().equals("TurnoRT"))
+            return true;
+        return false;
+    }
 }

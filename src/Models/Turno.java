@@ -100,4 +100,11 @@ public class Turno {
 
         return datos;
     }
+
+    public void reservar(LocalDateTime fechaHoraActual) {
+        for(CambioEstadoTurno cet: getCambioEstadoTurnos()){
+            if(cet.esActual())
+                cet.setFechaHoraHasta(fechaHoraActual);
+        }
+    }
 }

@@ -1,6 +1,5 @@
 package Persistents;
 
-import Models.TipoRecursoTecnologico;
 import Models.Turno;
 
 import java.sql.PreparedStatement;
@@ -10,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Turno_DAO extends Conexion {
+
     public List<Turno> listar(int idRecTec) throws SQLException {
         List<Turno> turnos = new ArrayList<>();
         try {

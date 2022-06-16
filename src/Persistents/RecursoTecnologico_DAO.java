@@ -34,7 +34,7 @@ public class RecursoTecnologico_DAO extends Conexion {
                 TipoRecursoTecnologico_DAO tipoRecursoTecnologico_dao = new TipoRecursoTecnologico_DAO();
                 recursoTecnologico.setTipoRecursoTecnologico(tipoRecursoTecnologico_dao.obtenerTipo(rs.getInt("idTipoRecursoTec")));
 
-                //Asigno los turnos asicuado
+                //Asigno los turnos asicuado verrrrrrr
                 Turno_DAO turno_dao = new Turno_DAO();
                 recursoTecnologico.setTurnos(turno_dao.listar(recursoTecnologico.getNumeroRT()));
 

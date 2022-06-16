@@ -112,9 +112,9 @@ public class RecursoTecnologico {
     }
 
     public boolean esReservable(){
-        for(CambioEstadoRT ceRT: cambioEstadoRT) {
-            if(ceRT.esActual()){
-                if(ceRT.esReservable())
+        for(CambioEstadoRT cambioEstRT: getCambioEstadoRT()) {
+            if(cambioEstRT.esActual()){
+                if(cambioEstRT.esReservable())
                     return true;
             }
         }
@@ -139,12 +139,16 @@ public class RecursoTecnologico {
         return datosTrunos;
     }
 
+    //Metodo que recibe por parametro los objetos centro de investigacion y marca para obtener sus datos.
     public String[] mostrarDatosRecursoTecnologico(CentroDeInvestigacion centroDInvest,Marca marca) {
 
+        //Obtengo el numero de inventario convertido en cadena
         String numeroInventarioRT = String.valueOf(getNumeroRT());
-        //hay que mejorar este codigo, creeemos que deberia guardarse el ultimo cambio de estado o volver a preguntar por el mismo.
+        //Tomo el ultimo cambio de estado y a este le pido el nombre del estado.
         String estadoRT = getCambioEstadoRT().get(getCambioEstadoRT().size()-1).getEstado().getNombre();
+        //Obtengo el el nombre del centro de investigacion
         String nombreCentroInvestigacvion = obtenerCentroDeInvestigacion(centroDInvest);
+        //Obtengo la marca y modelo.
         String[] marcaYModelo = mostrarMarcayModelo(marca);
         String modeloRT = marcaYModelo[0];
         String marcaRT = marcaYModelo[1];
@@ -158,5 +162,20 @@ public class RecursoTecnologico {
 
     private String[] mostrarMarcayModelo(Marca marca) {
         return getModelo().mostrarMarcayModelo(marca);
+    }
+
+    public void esCientificoDeTuCentroInvestigacion(CentroDeInvestigacion ci) {
+        ci.esAsignado();
+
+    }
+
+    public void reservar(List<String> turnoAReservar, CentroDeInvestigacion centroDInvest, LocalDateTime fechaHoraactual) {
+        for(Turno t : getTurnos()){
+            if(t.getFechaHoraInicio().toString().equals(turnoAReservar.get(0))
+            && t.getFechaHoraFin().toString().equals(turnoAReservar.get(1))){
+                t.reservar(fechaHoraactual);
+            }
+        }
+        centroDInvest.asignarTurno(turnoAReservar);
     }
 }

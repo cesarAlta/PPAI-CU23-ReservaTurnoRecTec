@@ -1,5 +1,6 @@
 package Models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class AsignacionCientificoDelCI {
@@ -7,8 +8,8 @@ public class AsignacionCientificoDelCI {
     /*
         Atributos
     */
-    private Date fechaHoraDesde;
-    private Date fechaHoraHasta;
+    private LocalDateTime fechaHoraDesde;
+    private LocalDateTime fechaHoraHasta;
     private Turno turno;
     private PersonalCientifico personalCientifico;
 
@@ -16,26 +17,26 @@ public class AsignacionCientificoDelCI {
         Constructor
     */
 
-    public AsignacionCientificoDelCI(Date fechaHoraDesde, Date fechaHoraHasta) {
+    public AsignacionCientificoDelCI(LocalDateTime fechaHoraDesde, LocalDateTime fechaHoraHasta) {
         this.fechaHoraDesde = fechaHoraDesde;
         this.fechaHoraHasta = fechaHoraHasta;
     }
 
     // Inicio de metodos get y set
 
-    public Date getFechaHoraDesde() {
+    public LocalDateTime getFechaHoraDesde() {
         return fechaHoraDesde;
     }
 
-    public void setFechaHoraDesde(Date fechaHoraDesde) {
+    public void setFechaHoraDesde(LocalDateTime fechaHoraDesde) {
         this.fechaHoraDesde = fechaHoraDesde;
     }
 
-    public Date getFechaHoraHasta() {
+    public LocalDateTime getFechaHoraHasta() {
         return fechaHoraHasta;
     }
 
-    public void setFechaHoraHasta(Date fechaHoraHasta) {
+    public void setFechaHoraHasta(LocalDateTime fechaHoraHasta) {
         this.fechaHoraHasta = fechaHoraHasta;
     }
     //Fin de metodos get y set
@@ -50,4 +51,6 @@ public class AsignacionCientificoDelCI {
 
     }
 
+    public void esTuCientifico() {
+    }
 }
