@@ -17,7 +17,7 @@ public class GestorRegTurnoRecTec {
     //Lista de tipos de recursos tecnologicos.
     private List<TipoRecursoTecnologico> tipoRecTecnologicos;
     //Lista de nombres de tipos de recursostecnologicos.
-    private List<String> nombreTipoRecTecnologicos;
+    private List<String> nombreTipoRT;
     //Lista de recursos tecnologicos activos reservables
     private  List<RecursoTecnologico> recTecActivosReservables;
     private RecursoTecnologico recursoTecnologicoSeleccionado = null;
@@ -25,13 +25,14 @@ public class GestorRegTurnoRecTec {
     private LocalDateTime fechaHoraActual;
     private Usuario usuarioActual;
     private Sesion sesionActual;
+    private PersonalCientifico cientificoLogueado;
+    private CentroDeInvestigacion centroDeInvestigacionRecSeleccionad;
 
 
     public GestorRegTurnoRecTec(Controller controller) {
         this.controller = controller;
         usuarioActual = new Usuario("1234", "neuen" , true);
-        sesionActual = new Sesion(LocalDateTime.parse("2022-03-03T01:00:02"), usuarioActual);
-    }
+        sesionActual = new Sesion(LocalDateTime.parse("2022-03-03T01:00:02"), usuarioActual); }
 
     public void nuevaReservaTurnoDeRecursoTecnologico()  {
         try {
@@ -39,16 +40,16 @@ public class GestorRegTurnoRecTec {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        controller.pedirSeleccionTipoRecurso(this.nombreTipoRecTecnologicos);
+        controller.pedirSeleccionTipoRecurso(this.nombreTipoRT);
     }
 
     private void buscarTipoRecurso() throws Exception {
         //Obtenemos todos los tipos de recursos tecnologicos.
         tipoRecTecnologicos = new TipoRecursoTecnologico_DAO().listar();
         // Obtenemos los nombres de los tipos recursos tecnologicos.
-        nombreTipoRecTecnologicos = new ArrayList<>();
+        nombreTipoRT = new ArrayList<>();
         for(TipoRecursoTecnologico trc : tipoRecTecnologicos){
-            nombreTipoRecTecnologicos.add(trc.getNombre());
+            nombreTipoRT.add(trc.getNombre());
         }
     }
 
@@ -56,17 +57,21 @@ public class GestorRegTurnoRecTec {
 
         //Obtenemos los recursos tecnologicos de acuerdo al tipo de recurso tecnologico seleccionado
         obtenerRecursoTecnologicoActivo(tipoRecursoTecnologico);
+
         // creo una lista de objetos tabla para que se adapte a la tabla de la vista.
         List<TablaRecursosTec> tablaRecursosTecs = new ArrayList<>();
 
+        //
+        // agrupar despues del for.
+        //
         //Agrupamos recursos por centro de investigacion.
         agruparPorCentroInvestigacion(tablaRecursosTecs);
 
         /*Recorro la lista de recursos tecnologicos reservables y obtengo los datos a mostrar y voy
         creando objetos tabla y agregandolos a la lista
          */
-        for( RecursoTecnologico rt : recTecActivosReservables) {
 
+        for( RecursoTecnologico rt : recTecActivosReservables) {
             // envio por parametro el centro de investigacion y la marca, ambos materializados por sus respectivos DAO. para obtener sus datos de quien corresponda
             String datos[] = rt.mostrarDatosRecursoTecnologico(new CentroDeInvestigacion_DAO().obtenerDatos(rt.getNumeroRT()), new Marca_DAO().obtenerDatos(rt.getModelo().getNombre()));
             TablaRecursosTec trt = new TablaRecursosTec();
@@ -99,27 +104,44 @@ public class GestorRegTurnoRecTec {
         }
     }
 
-    public void recursoTecnologicoSeeccionado(TablaRecursosTec trecSelec) {
+    public void recursoTecnologicoSeeccionado(TablaRecursosTec trecSelec) throws SQLException {
         for(RecursoTecnologico recTec: recTecActivosReservables){
             if(recTec.getNumeroRT() == trecSelec.getIdRec())
                 recursoTecnologicoSeleccionado = recTec;
         }
+
         // terminar de implementar.
         if (verificarCentroInvestigacionCientificoLogueado()){
             obtenerTurnosRecursoTecnologogicoSeleccionado();
             obtenerFechaHoraActual();
+        }else {
+            controller.avisarflujoA1();
         }
     }
 
-    private boolean verificarCentroInvestigacionCientificoLogueado() {
-        Usuario usuarioCientifico = obtenerCientificoLogueado();
-        recursoTecnologicoSeleccionado.esCientificoDeTuCentroInvestigacion(new CentroDeInvestigacion());
-        return true;
+    private boolean verificarCentroInvestigacionCientificoLogueado() throws SQLException {
+        obtenerCientificoLogueado();
+        centroDeInvestigacionRecSeleccionad = new CentroDeInvestigacion_DAO().obtenerDatos(recursoTecnologicoSeleccionado.getNumeroRT());
+        List<AsignacionCientificoDelCI> asignacionesCientDelCI = new ArrayList<>();
+
+        asignacionesCientDelCI.add(new AsignacionCientificoDelCI(LocalDateTime.parse("2022-02-02T00:00"), LocalDateTime.parse("2022-02-03T00:00"),cientificoLogueado));
+        asignacionesCientDelCI.add(new AsignacionCientificoDelCI(LocalDateTime.parse("2022-02-02T00:00"), null, cientificoLogueado));
+        asignacionesCientDelCI.add(new AsignacionCientificoDelCI(LocalDateTime.parse("2022-02-02T00:00"), null, cientificoLogueado));
+
+//        asignacionesCientDelCI.add(new AsignacionCientificoDelCI(LocalDateTime.parse("2022-02-02T00:00"), LocalDateTime.parse("2022-02-03T00:00"),new PersonalCientifico(2,"Roberto","Gonsalez",33666009, "rces0365@gmail.com","rces0365@gmail.com")));
+  //      asignacionesCientDelCI.add(new AsignacionCientificoDelCI(LocalDateTime.parse("2022-02-02T00:00"), null, new PersonalCientifico(2,"Roberto","Gonsalez",33666009, "rces0365@gmail.com","rces0365@gmail.com")));
+    //    asignacionesCientDelCI.add(new AsignacionCientificoDelCI(LocalDateTime.parse("2022-02-02T00:00"), null, new PersonalCientifico(2,"Roberto","Gonsalez",33666009, "rces0365@gmail.com","rces0365@gmail.com")));
+
+        centroDeInvestigacionRecSeleccionad.setAsignacionesCientificoDelCIs(asignacionesCientDelCI);
+
+
+        return recursoTecnologicoSeleccionado.esCientificoDeTuCentroInvestigacion(centroDeInvestigacionRecSeleccionad, cientificoLogueado);
     }
 
     //deberia devolver cientifico
-    private Usuario obtenerCientificoLogueado() {
-        return this.sesionActual.obtenerCientifico();
+    private void obtenerCientificoLogueado() {
+        this.sesionActual.obtenerCientifico();
+        cientificoLogueado = new PersonalCientifico(1,"Roberto","Gonsalez",33666009, "rces0365@gmail.com","rces0365@gmail.com");
     }
 
     public List<TipoRecursoTecnologico> getTipo(){ return tipoRecTecnologicos; }
@@ -130,7 +152,6 @@ public class GestorRegTurnoRecTec {
         obtenerFechaHoraActual();
         turnosRecTecnologicoSeleccionado = recursoTecnologicoSeleccionado.mostrarTurnos(fechaHoraActual);
         agruparYOrdenar();
-        definirColorTurno();
 
         controller.pedirSeleccionTurno(turnosRecTecnologicoSeleccionado);
 
@@ -143,11 +164,8 @@ public class GestorRegTurnoRecTec {
     private void agruparYOrdenar(){
 
     }
-    private void definirColorTurno(){
 
-    }
-
- private List<String> turnoSeleccionadoPorUsuario;
+    private List<String> turnoSeleccionadoPorUsuario;
 
     public void turnoSeleccionado(List<String> tunoSeleccionado) {
         turnoSeleccionadoPorUsuario = tunoSeleccionado;
@@ -161,12 +179,14 @@ public class GestorRegTurnoRecTec {
     private void generarReservaRecursoTecnologico() throws SQLException {
         Estado_DAO estado_dao = new Estado_DAO();
         List<Estado> estados = estado_dao.listar();
+        Estado estadoReservado = new Estado();
 
         for(Estado est: estados){
             if(est.esAmbitoTurno())
-                if(est.esEsReservable())
-                    recursoTecnologicoSeleccionado.reservar(turnoSeleccionadoPorUsuario,new CentroDeInvestigacion(), fechaHoraActual);
+                if(est.esReservado())
+                    estadoReservado = est;
         }
+        recursoTecnologicoSeleccionado.reservar(turnoSeleccionadoPorUsuario, centroDeInvestigacionRecSeleccionad, fechaHoraActual, estadoReservado, cientificoLogueado);
         generarMail();
     }
 

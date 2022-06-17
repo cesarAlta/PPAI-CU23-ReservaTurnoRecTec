@@ -101,10 +101,13 @@ public class Turno {
         return datos;
     }
 
-    public void reservar(LocalDateTime fechaHoraActual) {
+    public void reservar(LocalDateTime fechaHoraActual, Estado estadoReservado) {
         for(CambioEstadoTurno cet: getCambioEstadoTurnos()){
+            //cambiar a obtener el ultimo con int
             if(cet.esActual())
                 cet.setFechaHoraHasta(fechaHoraActual);
         }
+        CambioEstadoTurno estadoNuevo = new CambioEstadoTurno(fechaHoraActual,null,estadoReservado);
+        getCambioEstadoTurnos().add(estadoNuevo);
     }
 }

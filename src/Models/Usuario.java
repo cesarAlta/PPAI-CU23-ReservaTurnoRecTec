@@ -4,11 +4,13 @@ public class Usuario {
     private String clave;
     private String usuario;
     private boolean habilitado;
+    private PersonalCientifico personalCientifico;
 
     public Usuario(String clave, String usuario, boolean habilitado) {
         this.clave = clave;
         this.usuario = usuario;
         this.habilitado = habilitado;
+
     }
 
     public String getClave() {
@@ -37,4 +39,12 @@ public class Usuario {
     public void habilitar(){}
     public void inhabilitar(){}
     public void modificarPassword(){}
+
+    public PersonalCientifico getPersonalCientifico() {
+        return personalCientifico;
+    }
+
+    public void setPersonalCientifico(PersonalCientifico personalCientifico) {
+        this.personalCientifico = personalCientifico;
+    }
 }

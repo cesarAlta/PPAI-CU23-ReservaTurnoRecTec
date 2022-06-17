@@ -11,7 +11,7 @@
             <Button fx:id="buttonReserva" layoutX="14.0" layoutY="25.0" mnemonicParsing="false" onMouseClicked="#onReservaButtonClicked" text="Reservar turno de recurso tecnologico" />
          </children>
       </AnchorPane>
-      <AnchorPane id="reservaPanel" fx:id="reservaPane" layoutY="74.0" prefHeight="538.0" prefWidth="635.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <AnchorPane id="reservaPanel" fx:id="reservaPane" layoutY="74.0" prefHeight="538.0" prefWidth="635.0" visible="false" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
             <ComboBox fx:id="comboBoxTipoRecurso" layoutX="240.0" layoutY="14.0" onAction="#tomarSeleccionTipoRecurso" prefHeight="26.0" prefWidth="226.0" />
             <Label layoutX="128.0" layoutY="18.0" text="Tipo de recurso" />
@@ -34,9 +34,9 @@
             <Label fx:id="labSelccione" layoutX="33.0" layoutY="244.0" text="Seleccione una fecha" />
          </children>
       </AnchorPane>
-      <AnchorPane id="confirmarPanel" fx:id="confirmarPane" layoutX="198.0" layoutY="223.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #e1e6ed; -fx-border-color: #000000;" visible="false">
+      <AnchorPane id="confirmarPanel" fx:id="confirmarPane" layoutX="51.0" layoutY="175.0" prefHeight="264.0" prefWidth="512.0" style="-fx-background-color: #e1e6ed; -fx-border-color: #000000;" visible="false">
          <children>
-            <AnchorPane fx:id="confirmaPanel" prefHeight="44.0" prefWidth="202.0" style="-fx-background-color: #1f52a3;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane fx:id="confirmaPanel" layoutX="2.0" layoutY="2.0" prefHeight="53.0" prefWidth="245.0" style="-fx-background-color: #1f52a3;" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Atencion!">
                      <font>
@@ -45,11 +45,14 @@
                   </Text>
                </children>
             </AnchorPane>
-            <Text layoutX="51.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="datos del recurso" />
-            <Text layoutX="61.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="datos reserva" />
-            <Button layoutX="118.0" layoutY="161.0" mnemonicParsing="false" text="Confirmar" />
-            <Button layoutX="48.0" layoutY="161.0" mnemonicParsing="false" onMouseClicked="#onCancelarConfirmacionButtonClicked" text="cancelar" />
-            <RadioButton layoutX="18.0" layoutY="132.0" mnemonicParsing="false" selected="true" text="Enviar notificcion al mail" />
+            <Text fx:id="datosDelrecurso" layoutX="77.0" layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" text="datos del recurso" visible="false" />
+            <Text fx:id="datosReserva" layoutX="88.0" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0" text="datos reserva" visible="false" />
+            <Button fx:id="confiramrConfiramacion" layoutX="429.0" layoutY="226.0" mnemonicParsing="false" onMouseClicked="#confirmarReserva" text="Confirmar" />
+            <Button fx:id="cancelarVtaConfirmacion" layoutX="353.0" layoutY="226.0" mnemonicParsing="false" onMouseClicked="#onCancelarConfirmacionButtonClicked" text="cancelar" />
+            <RadioButton layoutX="36.0" layoutY="179.0" mnemonicParsing="false" selected="true" text="Enviar notificcion al mail" />
+            <TextArea fx:id="mostrarDatosDeReserva" editable="false" layoutX="24.0" layoutY="68.0" prefHeight="98.0" prefWidth="462.0" />
+            <RadioButton disable="true" layoutX="36.0" layoutY="208.0" mnemonicParsing="false" text="Enviar notificcion por whatsApp" />
+            <Button fx:id="cerrarConfirmacion" layoutX="405.0" layoutY="190.0" mnemonicParsing="false" onMouseClicked="#closeConfirmacion" text="Cerrar" visible="false" />
          </children>
       </AnchorPane>
    </children>

@@ -48,6 +48,10 @@ public class CambioEstadoRT {
         return Objects.equals(this.getFechaHoraHasta(), null);
     }
     public boolean esReservable(){
-        return getEstado().esEsReservable();
+        return getEstado().esReservado();
+    }
+
+    public String mostrarEstado() {
+        return getEstado().getNombre();
     }
 }

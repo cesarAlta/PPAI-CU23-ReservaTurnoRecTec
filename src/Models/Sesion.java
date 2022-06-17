@@ -37,7 +37,7 @@ public class Sesion {
         this.usuario = usuario;
     }
     //deberia devolver el cientifico.
-    public Usuario obtenerCientifico() {
-        return getUsuario();
+    public PersonalCientifico obtenerCientifico() {
+        return getUsuario().getPersonalCientifico();
     }
 }

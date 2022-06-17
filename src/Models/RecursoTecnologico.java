@@ -145,7 +145,7 @@ public class RecursoTecnologico {
         //Obtengo el numero de inventario convertido en cadena
         String numeroInventarioRT = String.valueOf(getNumeroRT());
         //Tomo el ultimo cambio de estado y a este le pido el nombre del estado.
-        String estadoRT = getCambioEstadoRT().get(getCambioEstadoRT().size()-1).getEstado().getNombre();
+        String estadoRT = getCambioEstadoRT().get(getCambioEstadoRT().size()-1).mostrarEstado();
         //Obtengo el el nombre del centro de investigacion
         String nombreCentroInvestigacvion = obtenerCentroDeInvestigacion(centroDInvest);
         //Obtengo la marca y modelo.
@@ -164,18 +164,21 @@ public class RecursoTecnologico {
         return getModelo().mostrarMarcayModelo(marca);
     }
 
-    public void esCientificoDeTuCentroInvestigacion(CentroDeInvestigacion ci) {
-        ci.esAsignado();
+    public boolean esCientificoDeTuCentroInvestigacion(CentroDeInvestigacion centroISelec, PersonalCientifico personalCLogueado) {
+         return centroISelec.esAsignado(personalCLogueado);
 
     }
 
-    public void reservar(List<String> turnoAReservar, CentroDeInvestigacion centroDInvest, LocalDateTime fechaHoraactual) {
+    public void reservar(List<String> turnoAReservar, CentroDeInvestigacion centroDInvest, LocalDateTime fechaHoraactual, Estado estadoReservado, PersonalCientifico persCientLog) {
+        Turno turnoReservado = new Turno();
         for(Turno t : getTurnos()){
             if(t.getFechaHoraInicio().toString().equals(turnoAReservar.get(0))
             && t.getFechaHoraFin().toString().equals(turnoAReservar.get(1))){
-                t.reservar(fechaHoraactual);
+                t.reservar(fechaHoraactual, estadoReservado);
+                turnoReservado=t;
             }
         }
-        centroDInvest.asignarTurno(turnoAReservar);
+
+        centroDInvest.asignarTurno(turnoReservado, fechaHoraactual, persCientLog);
     }
 }

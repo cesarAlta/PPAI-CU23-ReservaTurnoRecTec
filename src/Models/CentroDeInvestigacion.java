@@ -238,13 +238,14 @@ public class CentroDeInvestigacion {
 
     }
 
-    public void esAsignado() {
-      //  for ( AsignacionCientificoDelCI asignacionCientCI : getAsignacionesCientificoDelCIs()){
-     //           asignacionCientCI.esTuCientifico();
-    //    };
+    public boolean esAsignado(PersonalCientifico pc) {
+      for ( AsignacionCientificoDelCI asignacionCientCI : getAsignacionesCientificoDelCIs()){
+               if (asignacionCientCI.esTuCientifico(pc)) return true ;
+        };
+      return false;
     }
 
-    public void asignarTurno(List<String> turno) {
-        AsignacionCientificoDelCI nuevo = new AsignacionCientificoDelCI(LocalDateTime.parse(turno.get(0)), LocalDateTime.parse(turno.get(1)));
+    public void asignarTurno(Turno turno, LocalDateTime fechaHoraActual, PersonalCientifico personalCientifico) {
+        AsignacionCientificoDelCI nuevo = new AsignacionCientificoDelCI(fechaHoraActual,null,turno,personalCientifico);
     }
 }

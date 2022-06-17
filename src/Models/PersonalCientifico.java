@@ -10,6 +10,8 @@ public class PersonalCientifico {
     private int telefonoCelular;
     private Usuario usuario;
 
+    public PersonalCientifico(){};
+
     public PersonalCientifico(int legajo, String nombre, String apellido, int numeroDocumento,
                               String correoElectronicoInstitucional, String correoElectronicoPersonal,
                               int telefonoCelular, Usuario usuario) {
@@ -23,6 +25,14 @@ public class PersonalCientifico {
         this.usuario = usuario;
     }
 
+    public PersonalCientifico(int legajo, String nombre, String apellido, int numeroDocumento, String correoElectronicoInstitucional, String correoElectronicoPersonal) {
+        this.legajo = legajo;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.numeroDocumento = numeroDocumento;
+        this.correoElectronicoInstitucional = correoElectronicoInstitucional;
+        this.correoElectronicoPersonal = correoElectronicoPersonal;
+    }
     public int getLegajo() {
         return legajo;
     }

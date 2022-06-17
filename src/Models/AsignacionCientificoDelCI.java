@@ -1,7 +1,6 @@
 package Models;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class AsignacionCientificoDelCI {
 
@@ -17,12 +16,19 @@ public class AsignacionCientificoDelCI {
         Constructor
     */
 
-    public AsignacionCientificoDelCI(LocalDateTime fechaHoraDesde, LocalDateTime fechaHoraHasta) {
+    public AsignacionCientificoDelCI(LocalDateTime fechaHoraDesde, LocalDateTime fechaHoraHasta, PersonalCientifico pc) {
         this.fechaHoraDesde = fechaHoraDesde;
         this.fechaHoraHasta = fechaHoraHasta;
+        this.personalCientifico = pc;
     }
 
-    // Inicio de metodos get y set
+    public AsignacionCientificoDelCI(LocalDateTime fechaHoraDesde, LocalDateTime fechaHoraHasta, Turno turno, PersonalCientifico personalCientifico) {
+        this.fechaHoraDesde = fechaHoraDesde;
+        this.fechaHoraHasta = fechaHoraHasta;
+        this.turno = turno;
+        this.personalCientifico = personalCientifico;
+    }
+// Inicio de metodos get y set
 
     public LocalDateTime getFechaHoraDesde() {
         return fechaHoraDesde;
@@ -41,6 +47,14 @@ public class AsignacionCientificoDelCI {
     }
     //Fin de metodos get y set
 
+    public PersonalCientifico getPersonalCientifico() {
+        return personalCientifico;
+    }
+
+    public void setPersonalCientifico(PersonalCientifico personalCientifico) {
+        this.personalCientifico = personalCientifico;
+    }
+
     public void mostrarCientificoDelCI(){
 
     }
@@ -51,6 +65,7 @@ public class AsignacionCientificoDelCI {
 
     }
 
-    public void esTuCientifico() {
+    public boolean esTuCientifico(PersonalCientifico pc) {
+        return getPersonalCientifico().getLegajo()== pc.getLegajo();
     }
 }

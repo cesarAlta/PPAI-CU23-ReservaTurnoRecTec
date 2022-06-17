@@ -43,7 +43,7 @@ public class Estado {
         this.ambito = ambito;
     }
 
-    public boolean esEsReservable() {
+    public boolean esReservado() {
         return esReservable;
     }
 

@@ -17,9 +17,11 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 import java.net.URL;
+import java.security.PrivateKey;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -41,8 +43,12 @@ public class Controller implements Initializable {
     @FXML private TableColumn colModelo;
     @FXML private TableColumn colEstado;
     @FXML private TableColumn colInstitucion;
+    @FXML private TextArea mostrarDatosDeReserva;
+    @FXML private Button cancelarVtaConfirmacion;
+    @FXML private Button confiramrConfiramacion;
+    @FXML private Button cerrarConfirmacion;
     GestorRegTurnoRecTec gestorRegTurnoRecTec;
-    // aqui describimos que pasa cuando inicializa el controlador
+    //Aqui se habilitaria la pantalla.
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         gestorRegTurnoRecTec = new GestorRegTurnoRecTec(this);
@@ -57,7 +63,10 @@ public class Controller implements Initializable {
     public void onConfirmarButtonClicked(MouseEvent event){
         reservaPane.setDisable(true);
         confirmarPane.setVisible(true);
-    }public void onCancelarConfirmacionButtonClicked(MouseEvent event){
+        mostrarDatosDeReserva();
+    }
+
+     public void onCancelarConfirmacionButtonClicked(MouseEvent event){
         reservaPane.setDisable(false);
         confirmarPane.setVisible(false);
     }
@@ -87,11 +96,17 @@ public class Controller implements Initializable {
 
     }
 //tablaRecursos.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) ->mostrarAlertError() ));
+public String recursoSeleccionado;
 
     public void seleccionRecursoTecnologico(MouseEvent event){
        TablaRecursosTec trecSelec = tablaRecursos.getSelectionModel().getSelectedItem();
-       gestorRegTurnoRecTec.recursoTecnologicoSeeccionado(trecSelec);
-       calendarioTurnos.setDisable(false);
+       recursoSeleccionado = "Recurso: " + trecSelec.getMarca() + " " + trecSelec.getModelo() +"\n"+ "Centro de Investigacvion: "+  trecSelec.getCentroInvestigacion();
+        try {
+            gestorRegTurnoRecTec.recursoTecnologicoSeeccionado(trecSelec);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        calendarioTurnos.setDisable(false);
         /*if(trecSelec != null){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText(null);
@@ -166,7 +181,7 @@ private List<List<String>> tuenos;
         //this.tunosLista.getItems().addAll(turnosRecTecnologicoSeleccionado);
     }
 
-private String fechaseleccionada;
+    public String fechaseleccionada;
 
     public void seccionFecha(){
         fechaseleccionada = calendarioTurnos.getValue().toString();
@@ -180,7 +195,7 @@ private String fechaseleccionada;
         }
 
     }
-    private String turnoSele;
+    public String turnoSele;
 
     public void turnoSeleccionado(){
         String itemSeleccioandoTurno = this.tunosLista.getSelectionModel().getSelectedItem().toString();
@@ -189,17 +204,40 @@ private String fechaseleccionada;
         tunoSeleccionado.add(fechaseleccionada+"T"+itemSeleccioandoTurno.substring(0,5));
         //fechahora hasta
         tunoSeleccionado.add(fechaseleccionada+"T"+itemSeleccioandoTurno.substring(8,13));
+        turnoSele = tunoSeleccionado.get(0) + tunoSeleccionado.get(1);
 
         gestorRegTurnoRecTec.turnoSeleccionado(tunoSeleccionado);
 
     }
 
-
     public void pedirConfirmacionReserva() {
-
     }
-
     public void sconfirmacionReserva() throws SQLException {
         gestorRegTurnoRecTec.reservarRecursoTecnologico();
+    }
+
+    public void avisarflujoA1() {
+        mostrarAlertError();
+    }
+    private void mostrarDatosDeReserva() {
+        String mensaje = this.turnoSele;
+        String mensaje2 = this.recursoSeleccionado;
+        this.mostrarDatosDeReserva.setText(mensaje2 +"\n"+ mensaje);
+    }
+    @FXML
+    public void confirmarReserva(){
+        this.mostrarDatosDeReserva.clear();
+        mostrarDatosDeReserva.setText("CONFIRMADO. MAIL ENVIADO CON LOS DATOS");
+        cancelarVtaConfirmacion.setVisible(false);
+        confiramrConfiramacion.setVisible(false);
+        cerrarConfirmacion.setVisible(true);
+
+
+    }
+    @FXML
+    public void closeConfirmacion(){
+        reservaPane.setVisible(false);
+        confirmarPane.setVisible(false);
+
     }
 }
