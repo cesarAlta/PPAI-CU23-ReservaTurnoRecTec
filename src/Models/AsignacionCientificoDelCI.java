@@ -66,6 +66,6 @@ public class AsignacionCientificoDelCI {
     }
 
     public boolean esTuCientifico(PersonalCientifico pc) {
-        return getPersonalCientifico().getLegajo()== pc.getLegajo();
+        return getPersonalCientifico().getLegajo() == pc.getLegajo();
     }
 }

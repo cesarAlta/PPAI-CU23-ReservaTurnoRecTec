@@ -11,9 +11,9 @@
             <Button fx:id="buttonReserva" layoutX="14.0" layoutY="25.0" mnemonicParsing="false" onMouseClicked="#onReservaButtonClicked" text="Reservar turno de recurso tecnologico" />
          </children>
       </AnchorPane>
-      <AnchorPane id="reservaPanel" fx:id="reservaPane" layoutY="74.0" prefHeight="538.0" prefWidth="635.0" visible="false" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <AnchorPane id="reservaPanel" fx:id="reservaPane" layoutY="74.0" prefHeight="538.0" prefWidth="635.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <ComboBox fx:id="comboBoxTipoRecurso" layoutX="240.0" layoutY="14.0" onAction="#tomarSeleccionTipoRecurso" prefHeight="26.0" prefWidth="226.0" />
+            <ComboBox fx:id="comboBoxTipoRecurso" layoutX="240.0" layoutY="14.0" prefHeight="26.0" prefWidth="226.0" />
             <Label layoutX="128.0" layoutY="18.0" text="Tipo de recurso" />
             <Label layoutX="31.0" layoutY="52.0" text="Recurso" />
             <TableView id="reservaPanel" fx:id="tablaRecursos" layoutX="31.0" layoutY="70.0" onMouseClicked="#seleccionRecursoTecnologico" prefHeight="158.0" prefWidth="536.0">
@@ -27,7 +27,7 @@
             </TableView>
             <Label layoutX="32.0" layoutY="273.0" text="Fecha" />
             <DatePicker fx:id="calendarioTurnos" disable="true" layoutX="75.0" layoutY="269.0" onAction="#seccionFecha" />
-            <ListView fx:id="tunosLista" disable="true" layoutX="32.0" layoutY="330.0" onMouseClicked="#turnoSeleccionado" prefHeight="140.0" prefWidth="338.0" />
+            <ListView fx:id="tunosLista" disable="true" layoutX="32.0" layoutY="330.0" prefHeight="140.0" prefWidth="338.0" />
             <Label layoutX="33.0" layoutY="303.0" text="Turnos" />
             <Button layoutX="518.0" layoutY="488.0" mnemonicParsing="false" onMouseClicked="#onConfirmarButtonClicked" prefHeight="26.0" prefWidth="90.0" text="Reservar" />
             <Button layoutX="417.0" layoutY="488.0" mnemonicParsing="false" onMouseClicked="#onCancelButtonClicked" prefHeight="26.0" prefWidth="90.0" text="Cancelar" />

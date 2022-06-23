@@ -2,6 +2,7 @@ package Models;
 
 import jdk.nashorn.internal.runtime.OptimisticReturnFilters;
 
+import java.sql.Struct;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -82,15 +83,14 @@ public class Turno {
         }
         return false;
     }
-
+/*
     public List<String> mostrarDatos() {
         LocalDateTime horaFechaInicio =  getFechaHoraInicio();
         LocalDateTime horaFechaFin =getFechaHoraFin();
-        String estadoActual= null;
 
         for (CambioEstadoTurno cET: getCambioEstadoTurnos()){
             if(cET.esActual())
-                estadoActual = cET.mostrarEstado();
+                return cET.mostrarEstado();
         }
 
         List<String> datos = new ArrayList<>();
@@ -100,6 +100,15 @@ public class Turno {
 
         return datos;
     }
+    */
+    public Estado mostrarDatos() {
+        for (CambioEstadoTurno cET: getCambioEstadoTurnos()){
+            if(cET.esActual())
+             return cET.mostrarEstado();
+        }
+        return null;
+    }
+
 
     public void reservar(LocalDateTime fechaHoraActual, Estado estadoReservado) {
         for(CambioEstadoTurno cet: getCambioEstadoTurnos()){

@@ -71,7 +71,7 @@ public class CambioEstadoTurno {
         return false;
     }
 
-    public String mostrarEstado() {
-        return getEstado().getNombre();
+    public Estado mostrarEstado() {
+        return getEstado();
     }
 }

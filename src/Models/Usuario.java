@@ -13,6 +13,10 @@ public class Usuario {
 
     }
 
+    public Usuario() {
+
+    }
+
     public String getClave() {
         return clave;
     }
@@ -46,5 +50,9 @@ public class Usuario {
 
     public void setPersonalCientifico(PersonalCientifico personalCientifico) {
         this.personalCientifico = personalCientifico;
+    }
+
+    public PersonalCientifico obtenerCientifico(PersonalCientifico personalCientifico) {
+        return personalCientifico;
     }
 }

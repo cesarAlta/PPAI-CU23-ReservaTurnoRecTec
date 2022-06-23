@@ -8,10 +8,14 @@ public class Sesion {
     private LocalDateTime fechaHoraHasta;
     private Usuario usuario;
 
-    public Sesion(LocalDateTime fechaHoraDesde, Usuario usuario) {
+    public Sesion(LocalDateTime fechaHoraDesde) {
         this.fechaHoraDesde = fechaHoraDesde;
-        this.usuario = usuario;
     }
+
+    public Sesion() {
+
+    }
+
 
     public LocalDateTime getFechaHoraDesde() {
         return fechaHoraDesde;
@@ -37,7 +41,7 @@ public class Sesion {
         this.usuario = usuario;
     }
     //deberia devolver el cientifico.
-    public PersonalCientifico obtenerCientifico() {
-        return getUsuario().getPersonalCientifico();
+    public PersonalCientifico obtenerCientifico( PersonalCientifico personalCientifico) {
+        return getUsuario().obtenerCientifico(personalCientifico);
     }
 }
