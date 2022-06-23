@@ -9,7 +9,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("Views/sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("Views/PantallaRegistrarTurnoRecursoTecnologico.fxml"));
         primaryStage.setTitle("Reserva turno de recurso tecnologico");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

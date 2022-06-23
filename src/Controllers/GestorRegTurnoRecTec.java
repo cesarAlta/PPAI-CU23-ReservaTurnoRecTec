@@ -2,25 +2,24 @@ package Controllers;
 
 import Models.*;
 import Persistents.*;
-import Views.Controller;
+import Views.PantallaRegistrarTurnoRecursoTecnologico;
 import Views.TablaRecursosTec;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 // Patron controlador
 public class GestorRegTurnoRecTec {
 
-    private final Controller controller;
+    private final PantallaRegistrarTurnoRecursoTecnologico controller;
     //Lista de tipos de recursos tecnologicos.
     private List<TipoRecursoTecnologico> tipoRecTecnologicos;
     //Lista de nombres de tipos de recursostecnologicos.
     //private List<String> nombreTipoRT;
     //Lista de recursos tecnologicos activos reservables
-    private List<RecursoTecnologico> recTecActivosReservables;
+    private List<RecursoTecnologico> recursosTecActivosReservables;
     private RecursoTecnologico recursoTecnologicoSeleccionado = null;
     private HashMap<Estado, Turno> turnosRecTecnologicoSeleccionado;
     private LocalDateTime fechaHoraActual;
@@ -30,7 +29,7 @@ public class GestorRegTurnoRecTec {
     private CentroDeInvestigacion centroDeInvestigacionRecSeleccionad;
 
 
-    public GestorRegTurnoRecTec(Controller controller) {
+    public GestorRegTurnoRecTec(PantallaRegistrarTurnoRecursoTecnologico controller) {
         this.controller = controller;
         /*
         Se corrigio: no se deberian crear en el constructor del controlador.
@@ -47,6 +46,7 @@ public class GestorRegTurnoRecTec {
 
     public void nuevaReservaTurnoDeRecursoTecnologico() throws Exception {
         sesionActual = new Sesion(LocalDateTime.parse("2022-03-03T01:00:02"));
+
         controller.pedirSeleccionTipoRecurso(buscarTipoRecurso());
     }
 
@@ -54,7 +54,8 @@ public class GestorRegTurnoRecTec {
         //Obtenemos todos los tipos de recursos tecnologicos.
         tipoRecTecnologicos = new TipoRecursoTecnologico_DAO().listar();
         HashMap<String, TipoRecursoTecnologico> tiposRecTecnologicos = new HashMap<>();
-        for (TipoRecursoTecnologico tipoRT : tipoRecTecnologicos){
+
+        for (TipoRecursoTecnologico tipoRT : tipoRecTecnologicos) {
             tiposRecTecnologicos.put(tipoRT.getNombre(), tipoRT);
         }
         return tiposRecTecnologicos;
@@ -63,62 +64,73 @@ public class GestorRegTurnoRecTec {
     public void tomarSeleccionTipoRecurso(TipoRecursoTecnologico tipoRecursoTecnologico) throws Exception {
 
         //Obtenemos los recursos tecnologicos de acuerdo al tipo de recurso tecnologico seleccionado
-        obtenerRecursoTecnologicoActivo(tipoRecursoTecnologico);
+        recursosTecActivosReservables = obtenerRecursoTecnologicoActivo(tipoRecursoTecnologico);
 
-        // creo una lista de objetos tabla para que se adapte a la tabla de la vista.
-        List<TablaRecursosTec> tablaRecursosTecs = new ArrayList<>();
+        HashMap<String[], RecursoTecnologico> reTecHasMap = new HashMap<>();
 
-        //
-        // agrupar despues del for.
-        //
-        //Agrupamos recursos por centro de investigacion.
-        agruparPorCentroInvestigacion(tablaRecursosTecs);
-
-        /*Recorro la lista de recursos tecnologicos reservables y obtengo los datos a mostrar y voy
-        creando objetos tabla y agregandolos a la lista
-         */
-
-        for (RecursoTecnologico rt : recTecActivosReservables) {
-            // envio por parametro el centro de investigacion y la marca, ambos materializados por sus respectivos DAO. para obtener sus datos de quien corresponda
-            String datos[] = rt.mostrarDatosRecursoTecnologico(new CentroDeInvestigacion_DAO().obtenerDatos(rt.getNumeroRT()), new Marca_DAO().obtenerDatos(rt.getModelo().getNombre()));
-            TablaRecursosTec trt = new TablaRecursosTec();
-            trt.setIdRec(Integer.parseInt(datos[0]));
-            trt.setEstado(datos[1]);
-            trt.setMarca(datos[4]);
-            trt.setModelo(datos[3]);
-            trt.setCentroInvestigacion(datos[2]);
-
-            tablaRecursosTecs.add(trt);
+        for (RecursoTecnologico rt : recursosTecActivosReservables) {
+           String datos[] = rt.mostrarDatosRecursoTecnologico(new CentroDeInvestigacion_DAO().obtenerDatos(rt.getNumeroRT()), new Marca_DAO().obtenerDatos(rt.getModelo().getNombre()));
+           reTecHasMap.put(datos, rt);
         }
-        controller.pedirSeleccionRecursoTecnologico(tablaRecursosTecs);
+
+        LinkedHashMap<String[], RecursoTecnologico> listaOrdenadaRecursoTec = agruparPorCentroInvestigacion(reTecHasMap);
+        agruparPorCentroInvestigacion(listaOrdenadaRecursoTec);
+        definirColorRecursoTecnologico(listaOrdenadaRecursoTec);
+        controller.pedirSeleccionRecursoTecnologico(listaOrdenadaRecursoTec);
     }
 
-    private void agruparPorCentroInvestigacion(List<TablaRecursosTec> tablaRecursosTecs) {
-        //Agrupamos por centro de investigacion.
-        Collections.sort(tablaRecursosTecs);
+    private LinkedHashMap<String[], RecursoTecnologico> agruparPorCentroInvestigacion(HashMap<String[], RecursoTecnologico> recursosTec) {
+        //ordeno por fechas y turnos
+        List<Map.Entry<String[], RecursoTecnologico>> list = new ArrayList<>(recursosTec.entrySet());
+        list.sort(Map.Entry.comparingByKey((o1, o2) -> 1 * o1[4].compareTo(o2[4])));
+        //arreglo que mantiene el orden de insercion
+        LinkedHashMap<String[], RecursoTecnologico> recursosAgrupadosXCtroInvest = new LinkedHashMap<>();
+        list.forEach((i) -> recursosAgrupadosXCtroInvest.put(i.getKey(), i.getValue()));
+        return recursosAgrupadosXCtroInvest;
     }
 
-    public void obtenerRecursoTecnologicoActivo(TipoRecursoTecnologico tipoRecursoTecnologico) throws Exception {
+    private void definirColorRecursoTecnologico(LinkedHashMap<String[], RecursoTecnologico> recursoTecnologicos) {
+
+        recursoTecnologicos.forEach(
+                (k, v) -> {
+                    switch (k[1]) {
+                        case "Disponible":
+                            k[1] = "BLUE";
+                            break;
+                        case "En Mantenimiento Preventivo":
+                            k[1] = "GREEN";
+                            break;
+                        case "En Mantenimineto Correctivo":
+                            k[1] = "GRAY";
+                            break;
+
+                    }
+                }
+        );
+
+    }
+
+    public List<RecursoTecnologico> obtenerRecursoTecnologicoActivo(TipoRecursoTecnologico tipoRecursoTecnologico) throws Exception {
         RecursoTecnologico_DAO recursoTecnologico_dao = new RecursoTecnologico_DAO();
-        recTecActivosReservables = new ArrayList<>();
+        List<RecursoTecnologico> recursosTecActivosReservables = new ArrayList<>();
 
         for (RecursoTecnologico rt : recursoTecnologico_dao.listar()) {
             if (rt.esDeTipoRecursoTecnologicoSeleccionado(tipoRecursoTecnologico)) {
                 if (rt.esReservable()) {
-                    // si el recurso tecnologico es reservable lo agrelo a la lista.
-                    recTecActivosReservables.add(rt);
+                    // si el recurso tecnologico es reservable lo agrego a la lista.
+                    recursosTecActivosReservables.add(rt);
                 }
             }
         }
+        return recursosTecActivosReservables;
     }
 
     public void recursoTecnologicoSeeccionado(TablaRecursosTec trecSelec) throws SQLException {
-        for (RecursoTecnologico recTec : recTecActivosReservables) {
+        for (RecursoTecnologico recTec : recursosTecActivosReservables) {
             if (recTec.getNumeroRT() == trecSelec.getIdRec())
                 recursoTecnologicoSeleccionado = recTec;
         }
 
-        // terminar de implementar.
         if (verificarCentroInvestigacionCientificoLogueado()) {
             obtenerTurnosRecursoTecnologogicoSeleccionado();
             obtenerFechaHoraActual();
@@ -156,27 +168,25 @@ public class GestorRegTurnoRecTec {
         return tipoRecTecnologicos;
     }
 
-
     private void obtenerTurnosRecursoTecnologogicoSeleccionado() {
         obtenerFechaHoraActual();
         turnosRecTecnologicoSeleccionado = recursoTecnologicoSeleccionado.mostrarTurnos(fechaHoraActual);
-        agruparYOrdenar(turnosRecTecnologicoSeleccionado);
-        controller.pedirSeleccionTurno(turnosRecTecnologicoSeleccionado);
+        LinkedHashMap<Estado, Turno> turnosOrdenadosYAgrupados = agruparYOrdenar();
+        controller.pedirSeleccionTurno(turnosOrdenadosYAgrupados);
     }
 
     private void obtenerFechaHoraActual() {
         fechaHoraActual = LocalDateTime.now();
     }
 
-    private void agruparYOrdenar(Map<Estado, Turno> map) {
-
-//        return map.entrySet()
-//                .stream()
-//                .sorted(Map.Entry.comparingByValue((o1, o2) -> 1 * o1.getFechaHoraInicio().compareTo(o2.getFechaHoraInicio())))
-//                .collect(Collectors.toMap(
-//                        Map.Entry::getKey,
-//                        Map.Entry::getValue,
-//                        (viejo, nuevo) -> viejo, LinkedHashMap::new));
+    private LinkedHashMap<Estado, Turno> agruparYOrdenar() {
+        //ordeno por fechas y turnos
+        List<Map.Entry<Estado, Turno>> list = new ArrayList<>(turnosRecTecnologicoSeleccionado.entrySet());
+        list.sort(Map.Entry.comparingByValue((o1, o2) -> 1 * o1.getFechaHoraInicio().compareTo(o2.getFechaHoraInicio())));
+        //arreglo que mantiene el orden de insercion
+        LinkedHashMap<Estado, Turno> listaOrdenadaTurnos = new LinkedHashMap<>();
+        list.forEach((i) -> listaOrdenadaTurnos.put(i.getKey(), i.getValue()));
+        return listaOrdenadaTurnos;
     }
 
     private Turno turnoSeleccionadoPorUsuario;
@@ -205,8 +215,15 @@ public class GestorRegTurnoRecTec {
     }
 
     private void generarMail() {
-
+        String mensajeMail =   "Turno reservado con exito. \n " +
+                "Recurso tecnologico: "+ recursoTecnologicoSeleccionado.getModelo().getNombre()+"\n"+
+                "Intitucion: " +centroDeInvestigacionRecSeleccionad.getNombre()+"\n"+
+                "Fecha: "+turnoSeleccionadoPorUsuario.getFechaHoraInicio().toLocalDate()+ "\nHora:"+turnoSeleccionadoPorUsuario.getFechaHoraInicio().toLocalTime()+ " a "+ turnoSeleccionadoPorUsuario.getFechaHoraFin().toLocalTime() ;
+        enviarEmail( mensajeMail);
     }
 
-
+    private void enviarEmail(String mensajeMail) {
+        // no deberia ir a la pantalla, solo es para mostrar como se veria el cuerpo del mail
+        System.out.println(mensajeMail);
+    }
 }

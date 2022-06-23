@@ -18,7 +18,8 @@ public class RecursoTecnologico {
     private Modelo modelo;
     private TipoRecursoTecnologico tipoRecursoTecnologico;
 
-    public RecursoTecnologico(){}
+    public RecursoTecnologico() {
+    }
 
     public RecursoTecnologico(int numeroRT, Date fechaAlta, String imagenes,
                               int periodicidadMantenimientoPrev,
@@ -95,9 +96,13 @@ public class RecursoTecnologico {
         this.tipoRecursoTecnologico = tipoRecursoTecnologico;
     }
 
-    public List<Turno> getTurnos() {return turnos;}
+    public List<Turno> getTurnos() {
+        return turnos;
+    }
 
-    public void setTurnos(List<Turno> turnos) {this.turnos = turnos;}
+    public void setTurnos(List<Turno> turnos) {
+        this.turnos = turnos;
+    }
 
     public List<CambioEstadoRT> getCambioEstadoRT() {
         return cambioEstadoRT;
@@ -107,58 +112,72 @@ public class RecursoTecnologico {
         this.cambioEstadoRT = cambioEstadoRT;
     }
 
-    public boolean esDeTipoRecursoTecnologicoSeleccionado(TipoRecursoTecnologico tipoRecSeleccionado){
-        return getTipoRecursoTecnologico().getNombre().equals(tipoRecSeleccionado.getNombre());
+    public boolean esDeTipoRecursoTecnologicoSeleccionado(TipoRecursoTecnologico tipoRecSeleccionado) {
+        return this.tipoRecursoTecnologico.getNombre().equals(tipoRecSeleccionado.getNombre());
     }
 
-    public boolean esReservable(){
-        for(CambioEstadoRT cambioEstRT: getCambioEstadoRT()) {
-            if(cambioEstRT.esActual()){
-                if(cambioEstRT.esReservable())
+    public boolean esReservable() {
+        for (CambioEstadoRT cambioEstRT : getCambioEstadoRT()) {
+            if (cambioEstRT.esActual()) {
+                if (cambioEstRT.esReservable())
                     return true;
             }
         }
         return false;
     }
 
-    public void mostrarRT(){}
-    public void habilitar(){}
-    public void conocerCategoria(){}
-    public void conocerCaracteristicaRecurso(){}
-    public void miModeloYMaarca(){}
-    public void nuevoMantenimietoPreventivo(){}
-    public void misTurnosDisponibles(){}
-/*
-    public List<List<String>> mostrarTurnos(LocalDateTime fechaHoraActual) {
-        List<List<String>> datosTrunos = new ArrayList<>();
-        List<Turno> turnosDisponibles = new ArrayList<>();
-        for(Turno turno: getTurnos()){
-            if(turno.esPosteriorFechaActual(fechaHoraActual)){
-                turnosDisponibles.add(turno.mostrarDatos());
-            }
-        }
-        return datosTrunos;
-    }*/
-public HashMap<Estado, Turno> mostrarTurnos(LocalDateTime fechaHoraActual) {
-
-    HashMap<Estado,Turno> turnos =new HashMap<>();
-
-    for(Turno turno: getTurnos()){
-        if(turno.esPosteriorFechaActual(fechaHoraActual)){
-            turnos.put(turno.mostrarDatos(),turno);
-        }
+    public void mostrarRT() {
     }
 
-    return turnos;
-}
+    public void habilitar() {
+    }
+
+    public void conocerCategoria() {
+    }
+
+    public void conocerCaracteristicaRecurso() {
+    }
+
+    public void miModeloYMaarca() {
+    }
+
+    public void nuevoMantenimietoPreventivo() {
+    }
+
+    public void misTurnosDisponibles() {
+    }
+
+    /*
+        public List<List<String>> mostrarTurnos(LocalDateTime fechaHoraActual) {
+            List<List<String>> datosTrunos = new ArrayList<>();
+            List<Turno> turnosDisponibles = new ArrayList<>();
+            for(Turno turno: getTurnos()){
+                if(turno.esPosteriorFechaActual(fechaHoraActual)){
+                    turnosDisponibles.add(turno.mostrarDatos());
+                }
+            }
+            return datosTrunos;
+        }*/
+    public HashMap<Estado, Turno> mostrarTurnos(LocalDateTime fechaHoraActual) {
+
+        HashMap<Estado, Turno> turnos = new HashMap<>();
+
+        for (Turno turno : getTurnos()) {
+            if (turno.esPosteriorFechaActual(fechaHoraActual)) {
+                turnos.put(turno.mostrarDatos(), turno);
+            }
+        }
+
+        return turnos;
+    }
 
     //Metodo que recibe por parametro los objetos centro de investigacion y marca para obtener sus datos.
-    public String[] mostrarDatosRecursoTecnologico(CentroDeInvestigacion centroDInvest,Marca marca) {
+    public String[] mostrarDatosRecursoTecnologico(CentroDeInvestigacion centroDInvest, Marca marca) {
 
         //Obtengo el numero de inventario convertido en cadena
         String numeroInventarioRT = String.valueOf(getNumeroRT());
         //Tomo el ultimo cambio de estado y a este le pido el nombre del estado.
-        String estadoRT = getCambioEstadoRT().get(getCambioEstadoRT().size()-1).mostrarEstado();
+        String estadoRT = getCambioEstadoRT().get(getCambioEstadoRT().size() - 1).mostrarEstado();
         //Obtengo el el nombre del centro de investigacion
         String nombreCentroInvestigacvion = obtenerCentroDeInvestigacion(centroDInvest);
         //Obtengo la marca y modelo.
@@ -166,7 +185,7 @@ public HashMap<Estado, Turno> mostrarTurnos(LocalDateTime fechaHoraActual) {
         String modeloRT = marcaYModelo[0];
         String marcaRT = marcaYModelo[1];
 
-       return  new String[]{numeroInventarioRT,estadoRT,nombreCentroInvestigacvion,modeloRT,marcaRT};
+        return new String[]{numeroInventarioRT, estadoRT, nombreCentroInvestigacvion, modeloRT, marcaRT};
     }
 
     private String obtenerCentroDeInvestigacion(CentroDeInvestigacion centroDInvest) {
@@ -178,18 +197,20 @@ public HashMap<Estado, Turno> mostrarTurnos(LocalDateTime fechaHoraActual) {
     }
 
     public boolean esCientificoDeTuCentroInvestigacion(CentroDeInvestigacion centroISelec, PersonalCientifico personalCLogueado) {
-         return centroISelec.esAsignado(personalCLogueado);
+        return centroISelec.esAsignado(personalCLogueado);
 
     }
 
     public void reservar(Turno turnoAReservar, CentroDeInvestigacion centroDInvest, LocalDateTime fechaHoraactual, Estado estadoReservado, PersonalCientifico persCientLog) {
     /*
-    Esto es lo que se corrigio.
-    antes traimaos un string de turno creabamos un nuevo turno para poder setearlo pero ahora
-    el turno viene como parametro desde el gestor quien es el que tiene la referencia.
-     */
+         Esto es lo que se corrigio.
+         antes traimaos un string de turno creabamos un nuevo turno para poder setearlo pero ahora
+         el turno viene como parametro desde el gestor quien es el que tiene la referencia.
+    */
 
-        /*Turno turnoReservado = new Turno();
+        /*
+
+        Turno turnoReservado = new Turno();
         for(Turno t : getTurnos()){
             if(t.getFechaHoraInicio().toString().equals(turnoAReservar.get(0))
             && t.getFechaHoraFin().toString().equals(turnoAReservar.get(1))){
@@ -198,7 +219,7 @@ public HashMap<Estado, Turno> mostrarTurnos(LocalDateTime fechaHoraActual) {
             }
         }
         */
-        turnoAReservar.reservar(fechaHoraactual,estadoReservado);
+        turnoAReservar.reservar(fechaHoraactual, estadoReservado);
         centroDInvest.asignarTurno(turnoAReservar, fechaHoraactual, persCientLog);
     }
 }

@@ -3,6 +3,7 @@ package Views;
 
 import Controllers.GestorRegTurnoRecTec;
 import Models.Estado;
+import Models.RecursoTecnologico;
 import Models.TipoRecursoTecnologico;
 import Models.Turno;
 import Utilities.Utilities;
@@ -28,7 +29,7 @@ import java.util.*;
 
 //el controlador debe inicializar de una fomra cuando arranque la pantalla entonces hacemos que implemente el metodo inizializable
 
-public class Controller implements Initializable {
+public class PantallaRegistrarTurnoRecursoTecnologico implements Initializable {
 
     //atributos de la pantallas
     @FXML
@@ -56,9 +57,9 @@ public class Controller implements Initializable {
     @FXML
     private TextArea mostrarDatosDeReserva;
     @FXML
-    private Button cancelarVtaConfirmacion;
+    private Button cancelarConfirmacionReserva;
     @FXML
-    private Button confiramrConfiramacion;
+    private Button confirmarConfiramacion;
     @FXML
     private Button cerrarConfirmacion;
     GestorRegTurnoRecTec gestorRegTurnoRecTec;
@@ -75,7 +76,8 @@ public class Controller implements Initializable {
     }
 
     public void onReservaButtonClicked(MouseEvent event) {
-        reservaPane.setVisible(true);
+        //reservaPane.setVisible(true);
+    pantallaInicial();
     }
 
     public void onCancelButtonClicked(MouseEvent event) {
@@ -87,15 +89,28 @@ public class Controller implements Initializable {
         confirmarPane.setVisible(true);
         mostrarDatosDeReserva();
     }
-
+    //cancelar alternatia 2 del cu-23
     public void onCancelarConfirmacionButtonClicked(MouseEvent event) {
-        reservaPane.setDisable(false);
-        confirmarPane.setVisible(false);
+
     }
+
+    public void pantallaInicial(){
+        this.confirmarPane.setVisible(false);
+        this.reservaPane.setVisible(true);
+        this.calendarioTurnos.setDisable(true);
+        this.tunosLista.setDisable(true);
+        comboBoxTipoRecurso.getSelectionModel().clearSelection();
+        tablaRecursos.getItems().removeAll();
+        tablaRecursos.getItems().clear();
+        calendarioTurnos.getEditor().clear();
+        tunosLista.getItems().removeAll();
+        tunosLista.getItems().clear();
+    }
+
     TipoRecursoTecnologico tipoRecursoTecnologicoSeleccionado;
 
     // Relleno el combo para que seleccione el tipo
-    public void pedirSeleccionTipoRecurso(HashMap<String, TipoRecursoTecnologico> tiposRecTecno){
+    public void pedirSeleccionTipoRecurso(HashMap<String, TipoRecursoTecnologico> tiposRecTecno) {
         comboBoxTipoRecurso.getItems().removeAll();
         comboBoxTipoRecurso.setItems(FXCollections.observableArrayList(tiposRecTecno.keySet()));
         comboBoxTipoRecurso.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
@@ -118,10 +133,16 @@ public class Controller implements Initializable {
         gestorRegTurnoRecTec.tomarSeleccionTipoRecurso(tipoRecursoTecnologicoSeleccionado);
     }
 
-    public void pedirSeleccionRecursoTecnologico(List<TablaRecursosTec> tablaRecursos) {
+    public void pedirSeleccionRecursoTecnologico(HashMap<String[], RecursoTecnologico> recursosTecnologicos) {
+        List<String[]> recursosTecLista = new ArrayList<String[]>(recursosTecnologicos.keySet());
+        List<TablaRecursosTec> tablaRecursosTecs = new ArrayList<>();
 
-        // establecer los colores para los diferentes tipos de estados.
-        ObservableList<TablaRecursosTec> rectecno = FXCollections.observableArrayList(tablaRecursos);
+        recursosTecLista.forEach((p) -> {
+            TablaRecursosTec tablaRecursosTec = new TablaRecursosTec(Integer.parseInt(p[0]), p[4], p[3], p[1], p[2]);
+            tablaRecursosTecs.add(tablaRecursosTec);
+        });
+
+        ObservableList<TablaRecursosTec> rectecno = FXCollections.observableArrayList(tablaRecursosTecs);
         this.tablaRecursos.setItems(rectecno);
         this.colId.setCellValueFactory(new PropertyValueFactory("idRec"));
         this.colMarca.setCellValueFactory(new PropertyValueFactory("marca"));
@@ -147,14 +168,6 @@ public class Controller implements Initializable {
             throwables.printStackTrace();
         }
         calendarioTurnos.setDisable(false);
-        /*if(trecSelec != null){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText(null);
-            alert.setTitle(trecSelec.getMarca());
-            alert.setContentText(trecSelec.getModelo());
-            alert.showAndWait();
-        }else
-            mostrarAlertError();*/
     }
 
     @FXML
@@ -219,7 +232,6 @@ public class Controller implements Initializable {
             }
         };
         this.calendarioTurnos.setDayCellFactory(dayCellFactory);
-        //this.tunosLista.getItems().addAll(turnosRecTecnologicoSeleccionado);
     }
 
     public LocalDate fechaseleccionada;
@@ -229,15 +241,15 @@ public class Controller implements Initializable {
         fechaseleccionada = calendarioTurnos.getValue();
         this.tunosLista.setDisable(false);
         LinkedHashMap<String, Turno> turnosFechaSeleccionada = new LinkedHashMap<>();
-        int i=0;
+        int i = 1;
         for (Turno t : tuenos.values()) {
 
             if (t.getFechaHoraInicio().toLocalDate().isEqual(fechaseleccionada)) {
                 String turnoAListar = t.getFechaHoraInicio().toLocalTime().toString() + " a " +
-                        t.getFechaHoraFin().toLocalTime().toString() + " "+
-                        Utilities.getKeyHasMap(tuenos,t).getNombre();
+                        t.getFechaHoraFin().toLocalTime().toString() + " " +
+                        Utilities.getKeyHasMap(tuenos, t).getNombre();
 
-                turnosFechaSeleccionada.put("Turno "+ i++ +": "+ turnoAListar,t);
+                turnosFechaSeleccionada.put("Turno " + i++ + ": " + turnoAListar, t);
 
             }
         }
@@ -256,17 +268,7 @@ public class Controller implements Initializable {
     public String turnoSele;
 
     public void turnoSeleccionado() {
-//        String itemSeleccioandoTurno = this.tunosLista.getSelectionModel().getSelectedItem().toString();
-//
-//        List<String> tunoSeleccionado = new ArrayList<>();
-//        //fechahora desde
-//        tunoSeleccionado.add(fechaseleccionada + "T" + itemSeleccioandoTurno.substring(0, 5));
-//        //fechahora hasta
-//        tunoSeleccionado.add(fechaseleccionada + "T" + itemSeleccioandoTurno.substring(8, 13));
-//        turnoSele = tunoSeleccionado.get(0) + tunoSeleccionado.get(1);
-
         gestorRegTurnoRecTec.turnoSeleccionado(turnoSeleccionado);
-
     }
 
     public void pedirConfirmacionReserva() {
@@ -274,6 +276,7 @@ public class Controller implements Initializable {
 
     public void sconfirmacionReserva() throws SQLException {
         gestorRegTurnoRecTec.reservarRecursoTecnologico();
+        confirmarReserva();
     }
 
     public void avisarflujoA1() {
@@ -281,17 +284,18 @@ public class Controller implements Initializable {
     }
 
     private void mostrarDatosDeReserva() {
-        String mensaje = this.turnoSele;
+        String mensaje = "Fecha: " + this.turnoSeleccionado.getFechaHoraInicio().toLocalDate().toString() +
+                ", hora: " + this.turnoSeleccionado.getFechaHoraInicio().toLocalTime().toString() + " a "
+                + this.turnoSeleccionado.getFechaHoraFin().toLocalTime().toString();
         String mensaje2 = this.recursoSeleccionado;
         this.mostrarDatosDeReserva.setText(mensaje2 + "\n" + mensaje);
     }
 
-    @FXML
     public void confirmarReserva() {
         this.mostrarDatosDeReserva.clear();
         mostrarDatosDeReserva.setText("CONFIRMADO. MAIL ENVIADO CON LOS DATOS");
-        cancelarVtaConfirmacion.setVisible(false);
-        confiramrConfiramacion.setVisible(false);
+        cancelarConfirmacionReserva.setVisible(false);
+        confirmarConfiramacion.setVisible(false);
         cerrarConfirmacion.setVisible(true);
 
 
@@ -303,4 +307,10 @@ public class Controller implements Initializable {
         confirmarPane.setVisible(false);
 
     }
+@FXML
+    public void cancelarConfiramcionReserva(){
+        confirmarPane.setVisible(false);
+        reservaPane.setDisable(false);
+    }
+
 }

@@ -9,6 +9,14 @@ public class TablaRecursosTec implements Comparable<TablaRecursosTec>{
     private  String estado;
     private String centroInvestigacion;
 
+    public TablaRecursosTec(int idRec, String marca, String modelo, String estado, String centroInvestigacion) {
+        this.idRec = idRec;
+        this.marca = marca;
+        this.modelo = modelo;
+        this.estado = estado;
+        this.centroInvestigacion = centroInvestigacion;
+    }
+
     public int getIdRec() {
         return idRec;
     }

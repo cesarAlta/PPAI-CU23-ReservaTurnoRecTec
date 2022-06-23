@@ -6,6 +6,7 @@ import Models.Marca;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Estado_DAO extends Conexion{
@@ -38,7 +39,7 @@ public class Estado_DAO extends Conexion{
     }
 
     public List<Estado> listar() throws SQLException {
-        List<Estado> estados = null;
+        List<Estado> estados = new ArrayList<>();
         try {
             this.conectar();
             PreparedStatement st = this.conexion.prepareStatement("SELECT * FROM estados");
@@ -49,7 +50,7 @@ public class Estado_DAO extends Conexion{
                 estado.setDescripcion(rs.getString("descripcion"));
                 estado.setAmbito(rs.getString("ambito"));
                 estado.setEsReservable(rs.getString("esReservable").equals("si"));
-//                estado.setEsCancelable(rs.getString("esCancelable").equals("si"));
+//               estado.setEsCancelable(rs.getString("esCancelable").equals("si"));
                 estados.add(estado);
             }
             rs.close();
